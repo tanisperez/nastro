@@ -1,0 +1,41 @@
+[package]
+name = "nastro-app"
+description = "Nastro, a skinnable desktop music player. The gpui binary: UI and glue only."
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "nastro"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = { workspace = true }
+gpui-kit = { workspace = true }
+dirs = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+toml = { workspace = true }
+log = { workspace = true }
+rust-i18n = { workspace = true }
+sys-locale = { workspace = true }
+icu_decimal = { workspace = true }
+icu_locale_core = { workspace = true }
+chrono = { workspace = true }
+async-channel = { workspace = true }
+nastro-core = { path = "../nastro-core" }
+nastro-skin = { path = "../nastro-skin" }
+nastro-dock = { path = "../nastro-dock" }
+nastro-audio = { path = "../nastro-audio" }
+
+[target.'cfg(windows)'.build-dependencies]
+embed-resource = "3"
+
+[dev-dependencies]
+tempfile = { workspace = true }
+pretty_assertions = { workspace = true }
+
+[lints]
+workspace = true

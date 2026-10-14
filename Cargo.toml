@@ -1,0 +1,76 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+default-members = ["crates/*"]
+
+[workspace.package]
+edition = "2024"
+version = "0.1.0"
+publish = false
+license = "Apache-2.0"
+authors = ["Estanislao Pérez Nartallo <tanisperez@gmail.com>"]
+
+[workspace.dependencies]
+# Same pins as Postino: gpui-kit 0.7.0 bundles gpui-component and gpui-base and pins gpui-pre
+# 0.3.7. `cargo tree -d --depth 0 | grep gpui` must stay empty.
+gpui-kit = "0.7.0"
+serde = "1"
+serde_json = "1"
+thiserror = "2"
+anyhow = "1"
+toml = "0.8"
+log = "0.4"
+dirs = "7"
+fastrand = "2"
+pretty_assertions = "1.4"
+tempfile = "3"
+# Already built by gpui-component (translations) and cosmic-text (OS language); same versions.
+rust-i18n = "4.2"
+sys-locale = "0.3"
+# ICU4X 2.3 for numbers shown to the user (CLDR data, only the four UI languages).
+icu_decimal = { version = "2.3", features = ["alloc"] }
+icu_locale_core = "2.3"
+# Already built by gpui-base with its default features; only the local clock is used here.
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+# Audio pipeline (versions checked on 2026-10-14, see docs/audio.md).
+symphonia = { version = "0.6.1", features = ["all"] }
+cpal = "0.18.2"
+rubato = "5.0.1"
+realfft = "3.5.0"
+rtrb = "0.4"
+# Already in the tree through gpui. Engine events reach the UI without polling.
+async-channel = "2.5"
+
+[workspace.lints.clippy]
+all = "warn"
+unwrap_used = "warn"
+expect_used = "warn"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+# Same as Postino: fat LTO, one codegen unit, stripped. Panics stay as unwind, so a panic in the
+# audio thread is reported instead of closing the whole app.
+[profile.release]
+lto = "fat"
+codegen-units = 1
+strip = true
+
+# Decoding and the equalizer are slow without optimizations, and a debug build that stutters is
+# useless for checking playback by ear. Only the audio dependencies are optimized.
+[profile.dev.package.symphonia-core]
+opt-level = 3
+[profile.dev.package.symphonia-bundle-mp3]
+opt-level = 3
+[profile.dev.package.symphonia-bundle-flac]
+opt-level = 3
+[profile.dev.package.symphonia-codec-vorbis]
+opt-level = 3
+[profile.dev.package.symphonia-codec-aac]
+opt-level = 3
+[profile.dev.package.rubato]
+opt-level = 3
+[profile.dev.package.realfft]
+opt-level = 3
+[profile.dev.package.rustfft]
+opt-level = 3

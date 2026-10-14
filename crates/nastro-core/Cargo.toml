@@ -1,0 +1,18 @@
+[package]
+name = "nastro-core"
+description = "Nastro's domain model: tracks, playlists, play order and play state. No IO."
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+thiserror = { workspace = true }
+fastrand = { workspace = true }
+
+[dev-dependencies]
+pretty_assertions = { workspace = true }
+
+[lints]
+workspace = true

@@ -1,0 +1,26 @@
+[package]
+name = "nastro-audio"
+description = "Nastro's audio pipeline: decoding, resampling, equalizer, analysis and output."
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nastro-core = { path = "../nastro-core" }
+symphonia = { workspace = true }
+cpal = { workspace = true }
+rubato = { workspace = true }
+realfft = { workspace = true }
+rtrb = { workspace = true }
+async-channel = { workspace = true }
+thiserror = { workspace = true }
+log = { workspace = true }
+
+[dev-dependencies]
+pretty_assertions = { workspace = true }
+tempfile = { workspace = true }
+
+[lints]
+workspace = true
