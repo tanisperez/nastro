@@ -1,0 +1,49 @@
+# Nebula: dark violet anodized metal, mint LCD, magenta accent.
+# Built-in skin, format 1. Every token is documented in docs/skin-format.md.
+
+[skin]
+name = "Nebula"
+format = 1
+
+[font]
+ui = "Geist"
+mono = "Geist Mono"
+lcd = "Share Tech Mono"
+
+[color]
+frame_hi = "#3d3a5c"
+frame_mid = "#29263f"
+frame_lo = "#1b192b"
+frame_brush = 0.03
+frame_edge = "#0b0a14"
+bevel_hi = "#ffffff1f"
+groove = "#00000080"
+text = "#e4e1f5"
+text_muted = "#a7a2c8"
+control_hi = "#4a4670"
+control_lo = "#25223a"
+control_hover_hi = "#565280"
+control_hover_lo = "#2d2a46"
+slot = "#0e0d18"
+field_bg = "#1c1a2c"
+focus = "#ff7ac6"
+lcd_top = "#060914"
+lcd_bottom = "#0d1430"
+lcd_edge = "#000000"
+lcd_fg = "#7cf5d4"
+lcd_dim = "#2f6f68"
+lcd_glow = "#7cf5d473"
+lcd_rule = "#7cf5d429"
+vis_bar = "#7cf5d4"
+vis_osc = "#b6fff0"
+vis_peak = "#ff7ac6"
+accent = "#ff7ac6"
+accent_ink = "#ff7ac6"
+led_off = "#4a4766"
+
+[playlist]
+bg = "#120f24"
+fg = "#d6d2ee"
+current = "#7cf5d4"
+selected_bg = "#3a2f6b"
+index = "#8f89b8"

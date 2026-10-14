@@ -1,0 +1,49 @@
+# Graphite: dark graphite, amber LCD.
+# Built-in skin, format 1. Every token is documented in docs/skin-format.md.
+
+[skin]
+name = "Graphite"
+format = 1
+
+[font]
+ui = "Geist"
+mono = "Geist Mono"
+lcd = "Share Tech Mono"
+
+[color]
+frame_hi = "#50555d"
+frame_mid = "#363a40"
+frame_lo = "#25282d"
+frame_brush = 0.025
+frame_edge = "#0f1113"
+bevel_hi = "#ffffff24"
+groove = "#00000073"
+text = "#d4d8de"
+text_muted = "#9aa1ab"
+control_hi = "#5a6068"
+control_lo = "#2c3035"
+control_hover_hi = "#646a73"
+control_hover_lo = "#353a40"
+slot = "#121417"
+field_bg = "#1c1f23"
+focus = "#ffb54d"
+lcd_top = "#0d0c09"
+lcd_bottom = "#1a1610"
+lcd_edge = "#000000"
+lcd_fg = "#ffb54d"
+lcd_dim = "#7a5524"
+lcd_glow = "#ffaa3c66"
+lcd_rule = "#ffb54d29"
+vis_bar = "#ffb54d"
+vis_osc = "#ffcf8a"
+vis_peak = "#fff1d6"
+accent = "#ffb54d"
+accent_ink = "#ffb54d"
+led_off = "#4a4f57"
+
+[playlist]
+bg = "#141619"
+fg = "#c6cad1"
+current = "#ffb54d"
+selected_bg = "#3b4048"
+index = "#7e858f"

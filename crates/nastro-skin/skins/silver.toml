@@ -1,0 +1,49 @@
+# Silver: light brushed aluminium, ice blue LCD, navy playlist.
+# Built-in skin, format 1. Every token is documented in docs/skin-format.md.
+
+[skin]
+name = "Silver"
+format = 1
+
+[font]
+ui = "Geist"
+mono = "Geist Mono"
+lcd = "Share Tech Mono"
+
+[color]
+frame_hi = "#f3f5f7"
+frame_mid = "#d6dbe0"
+frame_lo = "#b3bac2"
+frame_brush = 0.05
+frame_edge = "#7b838d"
+bevel_hi = "#ffffffd9"
+groove = "#0000002e"
+text = "#262c33"
+text_muted = "#525963"
+control_hi = "#fbfcfd"
+control_lo = "#c3c9d0"
+control_hover_hi = "#ffffff"
+control_hover_lo = "#d0d5db"
+slot = "#5b636c"
+field_bg = "#f7f9fb"
+focus = "#0f6fae"
+lcd_top = "#0d1d2f"
+lcd_bottom = "#12314f"
+lcd_edge = "#0a121b"
+lcd_fg = "#a6e6ff"
+lcd_dim = "#4a7a99"
+lcd_glow = "#78d2ff73"
+lcd_rule = "#a6e6ff29"
+vis_bar = "#a6e6ff"
+vis_osc = "#7fd4ff"
+vis_peak = "#ffffff"
+accent = "#36b4ff"
+accent_ink = "#0f6fae"
+led_off = "#8a929b"
+
+[playlist]
+bg = "#163a62"
+fg = "#cfe0f2"
+current = "#ffffff"
+selected_bg = "#2f6aa5"
+index = "#8fb0d2"

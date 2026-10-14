@@ -1,0 +1,49 @@
+# Porcelain: matte white, black glass LCD with vermilion LEDs, ink black playlist.
+# Built-in skin, format 1. Every token is documented in docs/skin-format.md.
+
+[skin]
+name = "Porcelain"
+format = 1
+
+[font]
+ui = "Geist"
+mono = "Geist Mono"
+lcd = "Share Tech Mono"
+
+[color]
+frame_hi = "#ffffff"
+frame_mid = "#f1efea"
+frame_lo = "#dedad2"
+frame_brush = 0.015
+frame_edge = "#a39e95"
+bevel_hi = "#fffffff2"
+groove = "#281e141f"
+text = "#1f1d1a"
+text_muted = "#5a554e"
+control_hi = "#ffffff"
+control_lo = "#e4e0d8"
+control_hover_hi = "#ffffff"
+control_hover_lo = "#ece9e3"
+slot = "#3a3734"
+field_bg = "#ffffff"
+focus = "#c23a1f"
+lcd_top = "#0c0b0b"
+lcd_bottom = "#191716"
+lcd_edge = "#000000"
+lcd_fg = "#ff5a3c"
+lcd_dim = "#6b2a1f"
+lcd_glow = "#ff5a3c80"
+lcd_rule = "#ff5a3c29"
+vis_bar = "#ff5a3c"
+vis_osc = "#ff8a6e"
+vis_peak = "#ffd2c4"
+accent = "#ff5a3c"
+accent_ink = "#c23a1f"
+led_off = "#bdb7ad"
+
+[playlist]
+bg = "#1b1a19"
+fg = "#e9e5de"
+current = "#ff7a5c"
+selected_bg = "#3d3936"
+index = "#9a948b"
