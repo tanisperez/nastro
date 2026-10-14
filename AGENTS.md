@@ -35,14 +35,15 @@ HTTP client with the same stack: when in doubt about a convention, Postino's `AG
   cpal output), not `rodio`, so the equalizer, the visualizer and gapless playback are under our
   control. Details in `docs/audio.md`.
 - License: Apache-2.0 (`LICENSE`, `license` in `[workspace.package]`), like Postino.
+- GitHub repository: `tanisperez/nastro`, confirmed on 2026-10-14. Release work is tracked
+  with a milestone and issues there once the repository exists.
 
 ## Pending decisions (ask before choosing)
 
 Taken provisionally with Postino's values so the files have something to say. Do not change them
 silently, and do not settle them without asking.
 
-- GitHub owner and repository name (provisionally `tanisperez/nastro`) and the website
-  (provisionally `nastro.tanis.codes`).
+- The website (provisionally `nastro.tanis.codes`).
 - Trademark search for "Nastro" (EUIPO and OEPM, class 9). Known association: the beer brand
   "Nastro Azzurro", a different class.
 - Language of the docs (English for now, as in Postino).

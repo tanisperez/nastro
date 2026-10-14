@@ -7,7 +7,7 @@ and Nebula), you can write your own as a plain `skin.toml`, and importing classi
 planned.
 
 [Website](https://nastro.tanis.codes) · [Download](https://nastro.tanis.codes/install.html) ·
-[Documentation](#documentation) (the repository and the website addresses are provisional)
+[Documentation](#documentation) (the website address is provisional)
 
 ![Nastro in the Silver skin: the player playing a track with its spectrum visualizer, the equalizer below it and the playlist at the right.](site/img/player-silver.webp)
 
