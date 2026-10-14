@@ -25,6 +25,7 @@ icu_decimal = { workspace = true }
 icu_locale_core = { workspace = true }
 chrono = { workspace = true }
 async-channel = { workspace = true }
+image = { workspace = true }
 nastro-core = { path = "../nastro-core" }
 nastro-skin = { path = "../nastro-skin" }
 nastro-dock = { path = "../nastro-dock" }

@@ -40,6 +40,8 @@ realfft = "3.5.0"
 rtrb = "0.4"
 # Already in the tree through gpui. Engine events reach the UI without polling.
 async-channel = "2.5"
+# Already in the tree through gpui, which takes its frames for `RenderImage`.
+image = { version = "0.25", default-features = false }
 
 [workspace.lints.clippy]
 all = "warn"

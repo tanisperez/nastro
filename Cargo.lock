@@ -4285,6 +4285,7 @@ dependencies = [
  "gpui-kit",
  "icu_decimal",
  "icu_locale_core",
+ "image",
  "log",
  "nastro-audio",
  "nastro-core",
