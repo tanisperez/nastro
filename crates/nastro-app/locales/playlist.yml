@@ -50,6 +50,11 @@ playlist.sort:
   es: ORDENAR
   gl: ORDENAR
   it: ORDINA
+playlist.play_selected:
+  en: Play
+  es: Reproducir
+  gl: Reproducir
+  it: Riproduci
 playlist.remove_selected:
   en: Remove selected
   es: Quitar la selección

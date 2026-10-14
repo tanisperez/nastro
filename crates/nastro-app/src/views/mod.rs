@@ -4,6 +4,7 @@
 
 pub mod about;
 pub mod components;
+pub mod display;
 pub mod dock;
 pub mod equalizer;
 pub mod menus;

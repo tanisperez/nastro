@@ -53,6 +53,49 @@ pub fn read_playlist(path: &Path) -> Vec<Track> {
     }
 }
 
+/// The local paths of the `file://` URLs the OS hands over (macOS open events), others dropped.
+pub fn paths_from_urls(urls: &[String]) -> Vec<PathBuf> {
+    urls.iter()
+        .filter_map(|url| file_url_to_path(url))
+        .collect()
+}
+
+/// Converts one `file://` URL (percent-encoded, optional `localhost` host) into a path.
+fn file_url_to_path(url: &str) -> Option<PathBuf> {
+    let rest = url.strip_prefix("file://")?;
+    let rest = rest.strip_prefix("localhost").unwrap_or(rest);
+    if !rest.starts_with('/') {
+        return None;
+    }
+    let decoded = percent_decode(rest)?;
+    // `file:///C:/dir/file` carries a leading slash that is not part of a Windows path.
+    let bytes = decoded.as_bytes();
+    let path = if bytes.len() > 2 && bytes[2] == b':' && bytes[1].is_ascii_alphabetic() {
+        &decoded[1..]
+    } else {
+        decoded.as_str()
+    };
+    Some(PathBuf::from(path))
+}
+
+/// Decodes `%XX` escapes as UTF-8. `None` when an escape is malformed or the result is not UTF-8.
+fn percent_decode(text: &str) -> Option<String> {
+    let bytes = text.as_bytes();
+    let mut out = Vec::with_capacity(bytes.len());
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'%' {
+            let hex = text.get(index + 1..index + 3)?;
+            out.push(u8::from_str_radix(hex, 16).ok()?);
+            index += 3;
+        } else {
+            out.push(bytes[index]);
+            index += 1;
+        }
+    }
+    String::from_utf8(out).ok()
+}
+
 /// Adds every supported audio file under `dir` to `out`.
 fn walk(dir: &Path, depth: usize, out: &mut Vec<PathBuf>) {
     if depth > MAX_DEPTH {
@@ -133,6 +176,25 @@ mod tests {
         assert_eq!(tracks.len(), 2);
         assert_eq!(tracks[0].path, dir.path().join("song.mp3"));
         assert_eq!(tracks[0].meta.title.as_deref(), Some("Song"));
+    }
+
+    #[test]
+    fn file_urls_become_paths() {
+        assert_eq!(
+            file_url_to_path("file:///Users/ana/My%20Music/01%20Intro.flac"),
+            Some(PathBuf::from("/Users/ana/My Music/01 Intro.flac"))
+        );
+        assert_eq!(
+            file_url_to_path("file://localhost/tmp/caf%C3%A9.mp3"),
+            Some(PathBuf::from("/tmp/café.mp3"))
+        );
+        assert_eq!(
+            file_url_to_path("file:///C:/Music/a.mp3"),
+            Some(PathBuf::from("C:/Music/a.mp3"))
+        );
+        assert_eq!(file_url_to_path("https://example.com/a.mp3"), None);
+        assert_eq!(file_url_to_path("file:///tmp/%zz"), None);
+        assert_eq!(file_url_to_path("file://remote/tmp/a"), None);
     }
 
     #[test]

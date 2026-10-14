@@ -2,11 +2,15 @@
 //! balance. A gpui entity that animates only while playing: the frame task runs at
 //! [`FRAME_INTERVAL`] while the engine plays and does not exist otherwise, and engine events
 //! arrive through an async channel, so a paused or stopped player costs nothing.
+//!
+//! Each frame notifies only the small [`Frame`] entity, which the display observes; the
+//! transport itself notifies when something the rest of the player shows changes (play state,
+//! track, volume), so the buttons, menus and sliders are not rebuilt 30 times per second.
 
 use std::path::PathBuf;
 use std::time::Duration;
 
-use gpui_kit::{AsyncApp, Context, Task, WeakEntity};
+use gpui_kit::{AppContext as _, AsyncApp, Context, Entity, Task, WeakEntity};
 use nastro_audio::{AnalysisFrame, Player, PlayerEvent, PlayerStatus};
 use nastro_core::{EqSettings, PlayState};
 
@@ -21,14 +25,22 @@ pub const SEEK_STEP: Duration = Duration::from_secs(5);
 /// How much the volume shortcuts change the volume.
 pub const VOLUME_STEP: f32 = 0.05;
 
+/// What changes on every frame while playing: the visualizer. The position lives in
+/// [`Transport::status`], updated on the same frame; observers of this entity read both.
+#[derive(Default)]
+pub struct Frame {
+    /// The visualizer frame read on the last frame.
+    pub analysis: AnalysisFrame,
+}
+
 /// The transport entity.
 pub struct Transport {
     /// The engine.
     pub player: Player,
     /// The status read on the last frame or event.
     pub status: PlayerStatus,
-    /// The visualizer frame read on the last frame.
-    pub analysis: AnalysisFrame,
+    /// The per-frame data, notified on every frame while playing.
+    pub frame: Entity<Frame>,
     /// Volume, 0..=1.
     pub volume: f32,
     /// Balance, -1..=1.
@@ -67,7 +79,7 @@ impl Transport {
         Transport {
             status: player.status(),
             player,
-            analysis: AnalysisFrame::default(),
+            frame: cx.new(|_| Frame::default()),
             volume,
             balance,
             scrub: None,
@@ -215,9 +227,20 @@ impl Transport {
                 loop {
                     cx.background_executor().timer(FRAME_INTERVAL).await;
                     let alive = this.update(cx, |transport, cx| {
-                        transport.status = transport.player.status();
-                        transport.player.analysis(&mut transport.analysis);
-                        cx.notify();
+                        let status = transport.player.status();
+                        let changed = status.state != transport.status.state
+                            || status.path != transport.status.path
+                            || status.duration != transport.status.duration
+                            || status.info != transport.status.info;
+                        transport.status = status;
+                        let player = transport.player.clone();
+                        transport.frame.update(cx, |frame, cx| {
+                            player.analysis(&mut frame.analysis);
+                            cx.notify();
+                        });
+                        if changed {
+                            cx.notify();
+                        }
                         transport.status.state == PlayState::Playing
                     });
                     if !matches!(alive, Ok(true)) {

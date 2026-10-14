@@ -59,6 +59,15 @@ fn main() {
     let arguments: Vec<PathBuf> = std::env::args_os().skip(1).map(PathBuf::from).collect();
 
     let application = gpui_kit::application().with_assets(assets::Assets);
+    // Files the OS hands over while running (macOS open events). They can arrive before the
+    // window exists, so they wait in a channel that a task drains once the models are ready.
+    let (opened_tx, opened_rx) = async_channel::unbounded::<Vec<PathBuf>>();
+    application.on_open_urls(move |urls| {
+        let paths = state::files::paths_from_urls(&urls);
+        if !paths.is_empty() {
+            let _ = opened_tx.try_send(paths);
+        }
+    });
     application.run(move |cx| {
         cx.set_app_identity(APP_ID, APP_NAME);
         gpui_kit::init(cx);
@@ -95,6 +104,12 @@ fn main() {
         if !arguments.is_empty() {
             app::commands::open_paths(arguments, true, cx);
         }
+        cx.spawn(async move |cx| {
+            while let Ok(paths) = opened_rx.recv().await {
+                cx.update(|cx| app::commands::open_paths(paths, true, cx));
+            }
+        })
+        .detach();
     });
 }
 

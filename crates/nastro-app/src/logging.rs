@@ -1,17 +1,16 @@
-//! The persistent log file (GitHub #36): a small logger behind the `log` facade, which gpui,
-//! gpui-component, wgpu, ureq and rustls already log through, so installing it here also collects
-//! their messages.
+//! The persistent log file, the same as Postino's: a small logger behind the `log` facade, which
+//! gpui, gpui-component, wgpu, Symphonia and cpal already log through, so installing it here also
+//! collects their messages.
 //!
 //! The file lives where each OS expects application logs (see [`log_dir`]) and rotates by size:
 //! once `nastro.log` would grow past [`MAX_FILE_SIZE`] it becomes `nastro.1.log`, the previous
 //! `nastro.1.log` becomes `nastro.2.log`, and so on, keeping at most [`MAX_FILES`] files.
 //!
-//! The level comes from Settings, "Advanced" (`state::settings::LogLevel`, Info by default),
+//! The level comes from Preferences, "Log level" (`state::settings::LogLevel`, Info by default),
 //! and the [`ENV_VAR`] environment variable overrides it at startup. Crates other than Nastro's
 //! own and gpui's are capped at Warn, or Info at Trace, so their internals do not drown the
 //! app's own messages: at Debug, `naga` alone writes about 20 MB of lines while compiling gpui's
-//! shaders at startup, and the HTTP stack's Debug and Trace output would include header values
-//! this app never logs itself.
+//! shaders at startup.
 
 use std::fs::{self, File, OpenOptions};
 use std::io::{self, Write};
@@ -100,7 +99,7 @@ pub fn init(level: LevelFilter) -> Option<PathBuf> {
     opened
 }
 
-/// Changes the level live, from the Settings view.
+/// Changes the level live, from Preferences.
 pub fn set_level(level: LevelFilter) {
     log::set_max_level(level);
 }
@@ -278,7 +277,11 @@ mod tests {
         assert!(target_allowed("gpui_pre::window", Level::Trace, max));
         assert!(target_allowed("wgpu_hal::vulkan", Level::Info, max));
         assert!(!target_allowed("naga::front", Level::Debug, max));
-        assert!(!target_allowed("ureq_proto::client", Level::Trace, max));
+        assert!(!target_allowed(
+            "symphonia_core::formats",
+            Level::Trace,
+            max
+        ));
     }
 
     #[test]

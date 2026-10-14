@@ -6,7 +6,7 @@ use std::rc::Rc;
 
 use gpui_kit::AppContext as _;
 use gpui_kit::component::input::{Input, InputEvent, InputState};
-use gpui_kit::component::menu::{DropdownMenu as _, PopupMenu};
+use gpui_kit::component::menu::{ContextMenuExt as _, DropdownMenu as _, PopupMenu};
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::{
     AnyElement, App, ClickEvent, Context, CursorStyle, Div, Entity, FocusHandle, FontWeight,
@@ -200,6 +200,18 @@ impl PlaylistPanel {
         if event.click_count == 2 && !modifiers.shift && !modifiers.secondary() {
             commands::play_track(tab, index, cx);
         }
+    }
+
+    /// Handles a right press on row `index`: it joins the selection unless it is already in it,
+    /// like file managers do, so the context menu acts on what was clicked.
+    fn press_row_secondary(&mut self, index: usize, window: &mut Window, cx: &mut Context<Self>) {
+        self.list_focus.focus(window, cx);
+        let library = models(cx).library.clone();
+        library.update(cx, |library, cx| {
+            if !library.active_tab().playlist.is_selected(index) {
+                library.edit_active(cx, |playlist| playlist.select_only(index));
+            }
+        });
     }
 }
 
@@ -397,9 +409,10 @@ impl PlaylistPanel {
         current: Option<usize>,
         empty_text: String,
         cx: &mut Context<Self>,
-    ) -> gpui_kit::Stateful<Div> {
+    ) -> impl IntoElement {
         let c = &t.colors;
         let theme = t.clone();
+        let focus = self.root_focus.clone();
         let count = rows.len();
         let list = uniform_list(
             "tracks",
@@ -413,17 +426,24 @@ impl PlaylistPanel {
                         let track = playlist.track(index)?;
                         Some(track_row(
                             &theme,
-                            index,
-                            track.label(),
-                            track.meta.duration.map(format_length),
-                            playlist.is_selected(index),
-                            current == Some(index),
+                            Row {
+                                index,
+                                label: track.label(),
+                                length: track.meta.duration.map(format_length),
+                                selected: playlist.is_selected(index),
+                                playing: current == Some(index),
+                            },
                             cx.listener(
                                 move |panel: &mut PlaylistPanel,
                                       event: &MouseDownEvent,
                                       window,
                                       cx| {
                                     panel.press_row(index, event, window, cx)
+                                },
+                            ),
+                            cx.listener(
+                                move |panel: &mut PlaylistPanel, _: &MouseDownEvent, window, cx| {
+                                    panel.press_row_secondary(index, window, cx)
                                 },
                             ),
                         ))
@@ -462,6 +482,7 @@ impl PlaylistPanel {
                         .child(empty_text),
                 )
             })
+            .context_menu(move |menu, _, _| track_menu(menu.action_context(focus.clone())))
     }
 
     /// ADD, REMOVE, SELECT, SORT, and the summary.
@@ -511,16 +532,34 @@ impl PlaylistPanel {
     }
 }
 
+/// What a track row shows.
+struct Row {
+    /// The track's index in the playlist.
+    index: usize,
+    /// "Artist - Title", or the file name.
+    label: String,
+    /// The length, when known.
+    length: Option<String>,
+    /// Whether the row is selected.
+    selected: bool,
+    /// Whether it is the loaded track.
+    playing: bool,
+}
+
 /// One track row: index (or the playing glyph), label, length.
 fn track_row(
     t: &SkinTheme,
-    index: usize,
-    label: String,
-    length: Option<String>,
-    selected: bool,
-    playing: bool,
+    row: Row,
     on_press: impl Fn(&MouseDownEvent, &mut Window, &mut App) + 'static,
+    on_secondary_press: impl Fn(&MouseDownEvent, &mut Window, &mut App) + 'static,
 ) -> AnyElement {
+    let Row {
+        index,
+        label,
+        length,
+        selected,
+        playing,
+    } = row;
     let c = &t.colors;
     let bg = if selected {
         c.pl_selected_bg
@@ -566,6 +605,7 @@ fn track_row(
         })
         .cursor_pointer()
         .on_mouse_down(MouseButton::Left, on_press)
+        .on_mouse_down(MouseButton::Right, on_secondary_press)
         .child(number)
         .child(
             div()
@@ -584,6 +624,17 @@ fn track_row(
                 .child(length)
         }))
         .into_any_element()
+}
+
+/// The context menu of the track list.
+fn track_menu(menu: PopupMenu) -> PopupMenu {
+    menu.menu(t!("playlist.play_selected"), Box::new(PlaySelected))
+        .separator()
+        .menu(t!("playlist.remove_selected"), Box::new(RemoveSelected))
+        .menu(t!("playlist.crop"), Box::new(CropToSelection))
+        .separator()
+        .menu(t!("playlist.select_all"), Box::new(SelectAll))
+        .menu(t!("playlist.invert_selection"), Box::new(InvertSelection))
 }
 
 /// ADD: files and folders.

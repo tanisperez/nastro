@@ -203,7 +203,7 @@ impl VisualizerMode {
     }
 }
 
-/// How much Nastro writes to its log file, chosen in Preferences, "Advanced". Stored as
+/// How much Nastro writes to its log file, chosen in Preferences, "Log level". Stored as
 /// `log_level = "off" | "error" | "warn" | "info" | "debug" | "trace"`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum LogLevel {
