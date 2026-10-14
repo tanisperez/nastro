@@ -72,11 +72,15 @@ mod tests {
 
     #[test]
     fn clamped_limits_gains_and_drops_nan() {
-        let mut eq = EqSettings::default();
-        eq.preamp_db = 30.0;
-        eq.bands_db[0] = -40.0;
-        eq.bands_db[1] = f32::NAN;
-        let eq = eq.clamped();
+        let mut bands_db = [0.0; EQ_BAND_COUNT];
+        bands_db[0] = -40.0;
+        bands_db[1] = f32::NAN;
+        let eq = EqSettings {
+            preamp_db: 30.0,
+            bands_db,
+            ..EqSettings::default()
+        }
+        .clamped();
         assert_eq!(eq.preamp_db, 12.0);
         assert_eq!(eq.bands_db[0], -12.0);
         assert_eq!(eq.bands_db[1], 0.0);
