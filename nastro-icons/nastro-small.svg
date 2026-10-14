@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 1024 1024">
+  <title>Nastro</title>
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f3f5f7"/>
+      <stop offset="1" stop-color="#b3bac2"/>
+    </linearGradient>
+  </defs>
+  <rect x="48" y="48" width="928" height="928" rx="208" fill="url(#metal)" stroke="#7b838d" stroke-width="16"/>
+  <rect x="128" y="168" width="768" height="512" rx="128" fill="#12314f"/>
+  <circle cx="352" cy="440" r="112" fill="none" stroke="#a6e6ff" stroke-width="64"/>
+  <circle cx="672" cy="440" r="80" fill="none" stroke="#a6e6ff" stroke-width="64"/>
+  <path d="M352 296C424 196 472 436 512 350C552 264 608 400 672 328" fill="none" stroke="#d8f4ff" stroke-width="72" stroke-linecap="round"/>
+  <path d="M280 968L352 768H672L744 968" fill="#b3bac2" stroke="#7b838d" stroke-width="16" stroke-linejoin="round"/>
+</svg>

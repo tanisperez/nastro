@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>Nastro</title>
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f3f5f7"/>
+      <stop offset="0.4" stop-color="#d6dbe0"/>
+      <stop offset="1" stop-color="#b3bac2"/>
+    </linearGradient>
+    <linearGradient id="lcd" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d1d2f"/>
+      <stop offset="1" stop-color="#12314f"/>
+    </linearGradient>
+    <radialGradient id="pack" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0.3" stop-color="#24578a"/>
+      <stop offset="1" stop-color="#14365c"/>
+    </radialGradient>
+    <filter id="glow" x="-30%" y="-60%" width="160%" height="220%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+  <rect x="64" y="64" width="896" height="896" rx="200" fill="url(#metal)" stroke="#7b838d" stroke-width="6"/>
+  <path d="M264 72H760" stroke="#ffffff" stroke-opacity="0.9" stroke-width="6" stroke-linecap="round"/>
+  <rect x="168" y="232" width="688" height="432" rx="80" fill="url(#lcd)" stroke="#0a121b" stroke-width="8"/>
+  <path d="M232 236H792" stroke="#ffffff" stroke-opacity="0.45" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="376" cy="468" r="138" fill="url(#pack)" stroke="#a6e6ff" stroke-opacity="0.35" stroke-width="4"/>
+  <circle cx="664" cy="468" r="100" fill="url(#pack)" stroke="#a6e6ff" stroke-opacity="0.35" stroke-width="4"/>
+  <circle cx="376" cy="468" r="40" fill="none" stroke="#a6e6ff" stroke-width="22"/>
+  <circle cx="664" cy="468" r="40" fill="none" stroke="#a6e6ff" stroke-width="22"/>
+  <path d="M376 330C436 252 476 422 520 350C562 280 612 406 664 368" fill="none" stroke="#36b4ff" stroke-width="30" stroke-linecap="round" opacity="0.7" filter="url(#glow)"/>
+  <path d="M376 330C436 252 476 422 520 350C562 280 612 406 664 368" fill="none" stroke="#d8f4ff" stroke-width="16" stroke-linecap="round"/>
+  <path d="M300 957L356 776H668L724 957" fill="#d6dbe0" stroke="#7b838d" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M362 782H662" stroke="#ffffff" stroke-opacity="0.9" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+  <circle cx="436" cy="872" r="22" fill="#12314f" stroke="#7b838d" stroke-width="4"/>
+  <circle cx="588" cy="872" r="22" fill="#12314f" stroke="#7b838d" stroke-width="4"/>
+</svg>
