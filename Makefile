@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help run build release dist check lint lint-fix format format-check test clean docs site samples
+.PHONY: help run build release dist check lint lint-fix format format-check test clean screenshots docs site samples
 
 help:
 	@echo "Usage: make [target]"
@@ -16,6 +16,7 @@ help:
 	@echo "  format-check  Check formatting without modifying files"
 	@echo "  test          Run all tests"
 	@echo "  clean         Remove build artifacts"
+	@echo "  screenshots   Regenerate the screenshots of the four skins (site/img)"
 	@echo "  docs          Build the user documentation (site/docs-src into site/docs)"
 	@echo "  site          Build the documentation and serve the website on http://localhost:8000"
 	@echo "  samples       Generate synthetic test tracks into samples/audio (needs ffmpeg)"
@@ -64,6 +65,9 @@ clean:
 
 # The docs build needs Python 3 and nothing else.
 PYTHON ?= python3
+
+screenshots:
+	site/screenshots/capture.sh
 
 # site/docs is generated, never edited by hand (see site/README.md).
 docs:
