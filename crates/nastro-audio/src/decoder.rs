@@ -256,9 +256,9 @@ fn collect_tags(rev: &MetadataRevision, meta: &mut TrackMeta, album_artist: &mut
             Some(StandardTag::AlbumArtist(v)) => (&mut *album_artist, v),
             _ => continue,
         };
-        let value = value.trim();
+        let value = repair_text(value.trim());
         if slot.is_none() && !value.is_empty() {
-            *slot = Some(value.to_string());
+            *slot = Some(value);
         }
     }
 }
@@ -324,9 +324,116 @@ impl Decoder for SymphoniaDecoder {
         if meta.artist.is_none() {
             meta.artist = album_artist;
         }
+        if meta.title.is_none() {
+            // Symphonia drops the INFO tags of WAV files, so read them here.
+            if let Some(tags) = read_wav_info(path) {
+                meta.title = tags.title;
+                meta.artist = meta.artist.or(tags.artist);
+                meta.album = meta.album.or(tags.album);
+                meta.genre = meta.genre.or(tags.genre);
+            }
+        }
         let info = stream_info(&opened);
         Ok(Probe { meta, info })
     }
+}
+
+/// Repairs UTF-8 text that was decoded as Latin-1 (some AIFF writers store UTF-8 in chunks
+/// that are specified as Latin-1). Only when the Latin-1 chars form valid UTF-8 containing
+/// at least one non-ASCII char is the UTF-8 reading used, so real Latin-1 text stays as is.
+fn repair_text(text: &str) -> String {
+    if text.is_ascii() || text.chars().any(|c| u32::from(c) > 0xFF) {
+        return text.to_string();
+    }
+    let bytes: Vec<u8> = text.chars().map(|c| c as u8).collect();
+    match String::from_utf8(bytes) {
+        Ok(fixed) => fixed,
+        Err(_) => text.to_string(),
+    }
+}
+
+/// Most bytes of a LIST chunk that are read, and most chunks that are walked.
+const MAX_LIST_BYTES: u64 = 64 * 1024;
+const MAX_CHUNKS: usize = 256;
+
+/// Text of an INFO sub-chunk: up to the first NUL, UTF-8 with a lossy fallback.
+fn info_text(raw: &[u8]) -> Option<String> {
+    let end = raw.iter().position(|b| *b == 0).unwrap_or(raw.len());
+    let text = String::from_utf8_lossy(&raw[..end]);
+    let text = text.trim();
+    (!text.is_empty()).then(|| text.to_string())
+}
+
+/// Tags found in a WAV `LIST`/`INFO` chunk.
+#[derive(Default)]
+struct WavInfo {
+    title: Option<String>,
+    artist: Option<String>,
+    album: Option<String>,
+    genre: Option<String>,
+}
+
+/// Reads the `LIST`/`INFO` tags of a RIFF/WAVE file by walking its chunks. Sizes are never
+/// trusted: reads are bounded, and the walk stops at the end of the file or after a limit.
+fn read_wav_info(path: &Path) -> Option<WavInfo> {
+    use std::io::{Read, Seek, SeekFrom};
+    let mut file = File::open(path).ok()?;
+    let len = file.metadata().ok()?.len();
+    let mut header = [0u8; 12];
+    file.read_exact(&mut header).ok()?;
+    if &header[..4] != b"RIFF" || &header[8..] != b"WAVE" {
+        return None;
+    }
+    let mut pos = 12u64;
+    let mut found = None;
+    for _ in 0..MAX_CHUNKS {
+        if pos + 8 > len {
+            break;
+        }
+        file.seek(SeekFrom::Start(pos)).ok()?;
+        let mut chunk = [0u8; 8];
+        file.read_exact(&mut chunk).ok()?;
+        let size = u64::from(u32::from_le_bytes([chunk[4], chunk[5], chunk[6], chunk[7]]));
+        let body = pos + 8;
+        if &chunk[..4] == b"LIST" {
+            let take = size.min(MAX_LIST_BYTES).min(len.saturating_sub(body));
+            let mut data = vec![0u8; take as usize];
+            file.read_exact(&mut data).ok()?;
+            if let Some(info) = parse_info(&data) {
+                found = Some(info);
+                break;
+            }
+        }
+        pos = body + size + (size & 1);
+    }
+    found
+}
+
+/// Parses the sub-chunks of a `LIST` body when it is an `INFO` list.
+fn parse_info(data: &[u8]) -> Option<WavInfo> {
+    if data.get(..4)? != b"INFO" {
+        return None;
+    }
+    let mut info = WavInfo::default();
+    let mut at = 4usize;
+    while at + 8 <= data.len() {
+        let id = &data[at..at + 4];
+        let size = u32::from_le_bytes([data[at + 4], data[at + 5], data[at + 6], data[at + 7]]);
+        let start = at + 8;
+        let end = start.saturating_add(size as usize).min(data.len());
+        let text = info_text(&data[start..end]);
+        match id {
+            b"INAM" => info.title = text,
+            b"IART" => info.artist = text,
+            b"IPRD" => info.album = text,
+            b"IGNR" => info.genre = text,
+            _ => {}
+        }
+        at = start
+            .saturating_add(size as usize)
+            .saturating_add(size as usize & 1);
+    }
+    Some(info)
 }
 
 /// Technical details of a probed track. The bitrate is the file average.
@@ -618,5 +725,98 @@ mod tests {
         let mut stream = SymphoniaDecoder.open(&path).unwrap();
         let frames = decode_all(stream.as_mut()).len() / 2;
         assert!(frames > 10_000 && frames < 44_100, "{frames}");
+    }
+
+    /// A WAV with a `LIST`/`INFO` chunk before the data.
+    fn wav_with_info(path: &Path, tags: &[(&[u8; 4], &str)]) {
+        let mut list = b"INFO".to_vec();
+        for (id, text) in tags {
+            let mut raw = text.as_bytes().to_vec();
+            raw.push(0);
+            list.extend_from_slice(*id);
+            list.extend_from_slice(&(raw.len() as u32).to_le_bytes());
+            list.extend_from_slice(&raw);
+            if raw.len() % 2 == 1 {
+                list.push(0);
+            }
+        }
+        let pcm = vec![0u8; 8000];
+        let mut bytes = b"RIFF".to_vec();
+        let total = 4 + 24 + 8 + list.len() + 8 + pcm.len();
+        bytes.extend_from_slice(&(total as u32).to_le_bytes());
+        bytes.extend_from_slice(b"WAVEfmt ");
+        bytes.extend_from_slice(&16u32.to_le_bytes());
+        for v in [1u16, 1] {
+            bytes.extend_from_slice(&v.to_le_bytes());
+        }
+        bytes.extend_from_slice(&8000u32.to_le_bytes());
+        bytes.extend_from_slice(&16000u32.to_le_bytes());
+        bytes.extend_from_slice(&2u16.to_le_bytes());
+        bytes.extend_from_slice(&16u16.to_le_bytes());
+        bytes.extend_from_slice(b"LIST");
+        bytes.extend_from_slice(&(list.len() as u32).to_le_bytes());
+        bytes.extend_from_slice(&list);
+        bytes.extend_from_slice(b"data");
+        bytes.extend_from_slice(&(pcm.len() as u32).to_le_bytes());
+        bytes.extend_from_slice(&pcm);
+        std::fs::write(path, bytes).unwrap();
+    }
+
+    #[test]
+    fn wav_info_tags_are_read() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("t.wav");
+        wav_with_info(
+            &path,
+            &[
+                (b"INAM", "Valse Électrique"),
+                (b"IART", "Ana"),
+                (b"IPRD", "Odd"),
+                (b"IGNR", "Pop"),
+            ],
+        );
+        let meta = SymphoniaDecoder.probe(&path).unwrap().meta;
+        assert_eq!(meta.title.as_deref(), Some("Valse Électrique"));
+        assert_eq!(meta.artist.as_deref(), Some("Ana"));
+        assert_eq!(meta.album.as_deref(), Some("Odd"));
+        assert_eq!(meta.genre.as_deref(), Some("Pop"));
+    }
+
+    #[test]
+    fn wav_without_info_has_no_tags_and_a_bad_list_is_harmless() {
+        let dir = tempfile::tempdir().unwrap();
+        let plain = sine_wav(dir.path(), "p.wav", 8_000, 1, 0.1);
+        assert_eq!(SymphoniaDecoder.probe(&plain).unwrap().meta.title, None);
+        // A LIST chunk claiming a huge size must not break the walk.
+        let mut bytes = std::fs::read(&plain).unwrap();
+        bytes.extend_from_slice(b"LIST\xff\xff\xff\x7fINFOINAM");
+        let bad = dir.path().join("bad.wav");
+        std::fs::write(&bad, bytes).unwrap();
+        assert!(SymphoniaDecoder.probe(&bad).is_ok());
+    }
+
+    #[test]
+    fn real_samples_keep_their_tags_when_present() {
+        let samples = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../samples/audio");
+        for (file, title) in [
+            ("04-hat-and-noise.wav", "Hat and Noise"),
+            ("08-valse-électrique.wav", "Valse Électrique"),
+            ("06-silencio-en-el-café.aiff", "Silencio en el Café"),
+        ] {
+            let path = samples.join(file);
+            if path.exists() {
+                let meta = SymphoniaDecoder.probe(&path).unwrap().meta;
+                assert_eq!(meta.title.as_deref(), Some(title), "{file}");
+            }
+        }
+    }
+
+    #[test]
+    fn repair_text_fixes_only_mojibake() {
+        assert_eq!(repair_text("Silencio en el CafÃ©"), "Silencio en el Café");
+        assert_eq!(repair_text("Café"), "Café");
+        assert_eq!(repair_text("Plain"), "Plain");
+        assert_eq!(repair_text("日本"), "日本");
+        assert_eq!(repair_text("Ã"), "Ã");
     }
 }
