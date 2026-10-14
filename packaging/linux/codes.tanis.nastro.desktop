@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Nastro
+GenericName=Music Player
+Comment=A lightweight, skinnable desktop music player
+Exec=nastro %U
+Icon=codes.tanis.nastro
+Terminal=false
+Categories=AudioVideo;Audio;Player;
+MimeType=audio/mpeg;audio/flac;audio/x-flac;audio/ogg;audio/x-vorbis+ogg;audio/vorbis;audio/x-wav;audio/wav;audio/aac;audio/mp4;audio/x-m4a;audio/x-aiff;audio/aiff;audio/x-mpegurl;audio/mpegurl;application/vnd.apple.mpegurl;
+Keywords=music;audio;player;playlist;equalizer;skin;mp3;flac;
+StartupNotify=true
+StartupWMClass=codes.tanis.nastro

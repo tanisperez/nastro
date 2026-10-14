@@ -1,0 +1,112 @@
+title: Installation
+description: Install Nastro on Linux, Windows or macOS from a package, an installer or from source.
+---
+<h1>Installation</h1>
+<p class="lead">Nastro is a single desktop application with no account and no sign in. Download it for your system, or build it from source.</p>
+
+<div class="callout warning">
+    <p class="title">Early development</p>
+    <p>There is no release yet. The download links and package repositories below describe how releases will be published, and the website and repository addresses are provisional. Linux comes first; Windows and macOS builds are not verified yet.</p>
+</div>
+
+<h2>System requirements</h2>
+<div class="table"><table>
+    <thead><tr><th>System</th><th>Supported</th><th>Packages</th></tr></thead>
+    <tbody>
+        <tr><td>Linux</td><td>x86_64, Wayland or X11, ALSA (also through PipeWire or PulseAudio), a GPU driver with Vulkan</td><td><code>.deb</code>, <code>.rpm</code>, <code>.tar.gz</code>, APT and DNF repositories</td></tr>
+        <tr><td>Windows</td><td>Windows 10 and 11, 64 bit</td><td>Installer (<code>-setup.exe</code>), portable zip (<code>-portable.zip</code>)</td></tr>
+        <tr><td>macOS</td><td>Apple silicon (M1 and later)</td><td>Disk image (<code>.dmg</code>)</td></tr>
+    </tbody>
+</table></div>
+<p>Every file is published on the <a href="https://github.com/tanisperez/nastro/releases/latest">latest release</a> page on GitHub. The <a href="../install.html">download page</a> links to the right one for each system.</p>
+
+<h2>Linux</h2>
+
+<h3>Debian and Ubuntu (apt)</h3>
+<p>Add the signing key and the repository once, then install. Your usual <code>apt upgrade</code> keeps Nastro up to date.</p>
+```shell
+$ sudo curl -fsSLo /etc/apt/keyrings/nastro.asc https://nastro.tanis.codes/nastro.asc
+$ echo "deb [signed-by=/etc/apt/keyrings/nastro.asc] https://nastro.tanis.codes/apt stable main" \
+    | sudo tee /etc/apt/sources.list.d/nastro.list
+$ sudo apt update && sudo apt install nastro
+```
+
+<h3>Fedora and openSUSE (dnf, zypper)</h3>
+<p>Add the repository once, then install. The signing key is imported on the first install.</p>
+```shell
+# Fedora
+$ sudo curl -fsSLo /etc/yum.repos.d/nastro.repo https://nastro.tanis.codes/rpm/nastro.repo
+$ sudo dnf install nastro
+
+# openSUSE
+$ sudo zypper addrepo https://nastro.tanis.codes/rpm/nastro.repo
+$ sudo zypper install nastro
+```
+
+<h3>Tarball</h3>
+<p>The <code>.tar.gz</code> uses a <code>/usr</code>-like layout: <code>bin/nastro</code>, plus the desktop entry and the icons under <code>share/</code>. Extract it anywhere and run <code>bin/nastro</code>, or copy its contents under <code>~/.local</code> to get the menu entry. You also need the ALSA runtime library (<code>libasound2</code> on Debian and Ubuntu, <code>alsa-lib</code> on Fedora). A tarball install does not update itself: download new versions from the releases page.</p>
+
+<h3>What the Linux packages install</h3>
+<p>The <code>.deb</code> and <code>.rpm</code> packages install <code>/usr/bin/nastro</code>, a desktop entry and the icons. The desktop entry lists the common audio types and M3U playlists, so Nastro shows up in the "Open with" menu of your file manager.</p>
+
+<h2>Windows</h2>
+<p>Download <code>Nastro-…-windows-x86_64-setup.exe</code> and run it. The installer is per user: it installs into <code>%LOCALAPPDATA%\Programs\Nastro</code>, needs no administrator rights and adds a Start menu shortcut (and an optional desktop shortcut). One unchecked option makes Nastro an "Open with" choice for audio files and playlists.</p>
+
+<h3 id="portable">Portable zip</h3>
+<p>On a machine where running an installer is not allowed, download <code>Nastro-…-windows-x86_64-portable.zip</code> instead. It holds <code>nastro.exe</code>, the license and the notice. Unzip it anywhere you can run programs from and double click <code>nastro.exe</code>. There is nothing to install: no shortcut, no file association and no entry in Apps. To remove it, delete the folder. A portable copy still keeps its settings and logs in your user folders, see <a href="files-and-folders.html">Files and folders</a>.</p>
+
+<h2>macOS</h2>
+<p>Download <code>Nastro-…-macos-arm64.dmg</code>, open it and drag Nastro to Applications.</p>
+
+<h2 id="first-launch">First launch of an unsigned build</h2>
+<p>Nastro is not code signed yet, so your system asks once before opening it.</p>
+<ul>
+    <li><strong>macOS:</strong> if macOS says it cannot verify the developer, open System Settings, Privacy and Security, and choose <strong>Open Anyway</strong>. Or run this once:
+```shell
+$ xattr -dr com.apple.quarantine /Applications/Nastro.app
+```
+    </li>
+    <li><strong>Windows:</strong> if SmartScreen shows <strong>Windows protected your PC</strong>, choose <strong>More info</strong> and then <strong>Run anyway</strong>.</li>
+</ul>
+
+<h2 id="updates">Updates</h2>
+<p>Nastro has no built-in updater and never contacts the network on its own.</p>
+<div class="table"><table>
+    <thead><tr><th>Installed from</th><th>How it updates</th></tr></thead>
+    <tbody>
+        <tr><td>apt, dnf, zypper</td><td>With your system updates.</td></tr>
+        <tr><td>Tarball, Windows installer or portable zip, macOS disk image</td><td>Download the new version from the releases page and install it over the old one.</td></tr>
+        <tr><td>Built from source</td><td>Pull and build again.</td></tr>
+    </tbody>
+</table></div>
+
+<h2>Uninstall</h2>
+<ul>
+    <li><strong>Debian and Ubuntu:</strong> <code>sudo apt remove nastro</code>, then delete <code>/etc/apt/sources.list.d/nastro.list</code> and <code>/etc/apt/keyrings/nastro.asc</code> if you no longer want the repository.</li>
+    <li><strong>Fedora:</strong> <code>sudo dnf remove nastro</code> and delete <code>/etc/yum.repos.d/nastro.repo</code>.</li>
+    <li><strong>Windows:</strong> Settings, Apps, Nastro, Uninstall. A portable copy is not listed there: delete its folder.</li>
+    <li><strong>macOS:</strong> drag Nastro from Applications to the Trash.</li>
+</ul>
+<p>Uninstalling never touches your music or your playlists. To remove your settings, playlists, skins and logs as well, delete the folders listed in <a href="files-and-folders.html">Files and folders</a>.</p>
+
+<h2 id="build-from-source">Build from source</h2>
+<p>Nastro builds with the stable Rust toolchain. Install Rust with <a href="https://rustup.rs">rustup</a>; the exact toolchain version is pinned in <code>rust-toolchain.toml</code> and installed on the first build. Then install the system dependencies:</p>
+<ul>
+    <li><strong>Linux</strong> (Debian and Ubuntu package names; on Fedora install <code>alsa-lib-devel</code> for the audio library):
+```shell
+$ sudo apt install build-essential pkg-config cmake libfontconfig-dev libfreetype-dev \
+    libwayland-dev wayland-protocols libxkbcommon-dev libxkbcommon-x11-dev \
+    libx11-xcb-dev libxcb1-dev libvulkan-dev libasound2-dev
+```
+    </li>
+    <li><strong>macOS:</strong> Xcode with its command line tools.</li>
+    <li><strong>Windows:</strong> the Visual Studio Build Tools with the "Desktop development with C++" workload.</li>
+</ul>
+<p>Then build and run:</p>
+```shell
+$ git clone https://github.com/tanisperez/nastro.git
+$ cd nastro
+$ cargo run
+$ cargo build --release
+```
+<p>The first command builds and starts a debug binary. The second builds an optimized binary in <code>target/release/nastro</code>. A full build of gpui takes a while and several GB of disk space.</p>

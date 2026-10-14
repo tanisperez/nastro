@@ -1,0 +1,4 @@
+// Windows resources for nastro.exe. gpui loads the window and taskbar icon from the icon
+// resource with ID 1 (`load_icon` in gpui-pre-windows), and Explorer shows it as the file icon.
+// nastro.ico is the app icon (Silver colorway) at 16 to 256 px.
+1 ICON "nastro.ico"

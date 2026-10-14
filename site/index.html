@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nastro, a lightweight skinnable music player</title>
+    <meta name="description" content="Nastro is a lightweight, native, open source music player for Linux, Windows and macOS. Player, equalizer and playlist dock together and the look is a skin. No account, no cloud, no telemetry.">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#fbfcfd" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0f1620" media="(prefers-color-scheme: dark)">
+    <link rel="canonical" href="https://nastro.tanis.codes/">
+    <link rel="icon" href="img/logo.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="img/icon-512.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Nastro, a lightweight skinnable music player">
+    <meta property="og:description" content="No account, no cloud, no telemetry. It plays your local files, and the look is a skin.">
+    <meta property="og:url" content="https://nastro.tanis.codes/">
+    <meta property="og:image" content="https://nastro.tanis.codes/img/icon-512.png">
+    <link rel="preload" href="fonts/Geist-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/Geist-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/theme.js"></script>
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- Repository and domain (tanisperez/nastro, nastro.tanis.codes) are provisional, pending decisions. -->
+    <header class="site-header">
+        <div class="wrap">
+            <a class="brand" href="./">
+                <img src="img/logo.svg" alt="" width="28" height="28">
+                Nastro
+            </a>
+            <nav class="nav" aria-label="Main">
+                <a class="nav-wide" href="#features">Features</a>
+                <a href="install.html">Download</a>
+                <a href="docs/">Docs</a>
+                <a class="nav-github" href="https://github.com/tanisperez/nastro" aria-label="Nastro on GitHub">
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                    <span>GitHub</span>
+                </a>
+                <button class="theme-toggle" type="button" aria-label="Dark theme" title="Switch between light and dark">
+                    <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                    <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero">
+            <div class="wrap">
+                <span class="eyebrow"><span class="pill">Open source</span> Free for everyone, Apache-2.0</span>
+                <h1>The music player that <span class="accent">wears a skin</span></h1>
+                <p class="lead">Nastro is a lightweight, native music player. Player, equalizer and playlist dock together, and the look is a skin you can swap. No account, no cloud, no telemetry: it plays your local files.</p>
+                <div class="actions">
+                    <a class="btn btn-primary" href="install.html">Download Nastro</a>
+                    <a class="btn btn-secondary" href="https://github.com/tanisperez/nastro">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                        View on GitHub
+                    </a>
+                </div>
+                <p class="platforms">Early development: Linux first, Windows and macOS not verified yet. Screenshots coming soon.</p>
+            </div>
+        </section>
+
+        <section class="highlights" aria-label="Highlights">
+            <div class="wrap">
+                <ul>
+                    <li><strong>Native, not a browser</strong><span>Written in Rust on gpui, the GPU accelerated UI framework behind the Zed editor.</span></li>
+                    <li><strong>Light on your machine</strong><span>No bundled web engine. An idle player does no work, so it stays small and quiet.</span></li>
+                    <li><strong>Local first</strong><span>No sign in, no sync, no telemetry. It plays the files on your disk.</span></li>
+                    <li><strong>Yours to keep</strong><span>Open source under Apache-2.0, with a documented skin format.</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section section-alt" id="features">
+            <div class="wrap">
+                <div class="section-head">
+                    <span class="kicker">Features</span>
+                    <h2>A classic layout, built to be changed</h2>
+                    <p>Three panels, one small program.</p>
+                </div>
+                <div class="channels">
+                    <article class="channel">
+                        <h3>Docked panels</h3>
+                        <p>The player, a 10-band equalizer and the playlist snap to each other with magnetic edges and move as one group, or float on their own.</p>
+                    </article>
+                    <article class="channel">
+                        <h3>Skins</h3>
+                        <p>Four built-in skins (Silver, Graphite, Porcelain and Nebula) and your own in a plain <code>skin.toml</code> file. Support for classic skins is planned.</p>
+                    </article>
+                    <article class="channel">
+                        <h3>Its own audio pipeline</h3>
+                        <p>FLAC, MP3, Ogg Vorbis, WAV, AIFF and AAC, with a real equalizer, a spectrum visualizer and gapless playback in the works.</p>
+                    </article>
+                    <article class="channel">
+                        <h3>Playlists as text</h3>
+                        <p>Playlists are plain M3U files, so other tools can read them and nothing locks you in.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta">
+            <div class="wrap">
+                <div class="cta-box">
+                    <img src="img/logo.svg" alt="" width="64" height="64">
+                    <h2>Give Nastro a try</h2>
+                    <p>Free and open source, for Linux, Windows and macOS. No account needed, just download and play.</p>
+                    <div class="actions">
+                        <a class="btn btn-primary" href="install.html">Download Nastro</a>
+                        <a class="btn btn-secondary" href="docs/">Read the docs</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">
+            <span>Nastro is open source under the Apache License 2.0.</span>
+            <nav aria-label="Footer">
+                <a href="https://github.com/tanisperez/nastro">GitHub</a>
+                <a href="https://github.com/tanisperez/nastro/releases">Releases</a>
+                <a href="https://github.com/tanisperez/nastro/issues">Report an issue</a>
+                <a href="https://tanis.codes">tanis.codes</a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>

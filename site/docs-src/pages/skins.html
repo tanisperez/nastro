@@ -1,0 +1,75 @@
+title: Skins
+description: How to install a skin in Nastro, the built-in skins and a summary of the skin.toml format.
+---
+<h1>Skins</h1>
+<p class="lead">A skin decides how the player, the equalizer and the playlist look: the metal, the display, the buttons and the playlist colors. Nastro never hardcodes these, it reads them from the active skin.</p>
+
+<h2>Built-in skins</h2>
+<div class="table"><table>
+    <thead><tr><th>Skin</th><th>Look</th></tr></thead>
+    <tbody>
+        <tr><td>Silver</td><td>The default. Brushed light metal with a blue display.</td></tr>
+        <tr><td>Graphite</td><td>Dark metal with an amber display.</td></tr>
+        <tr><td>Porcelain</td><td>A light, warm finish.</td></tr>
+        <tr><td>Nebula</td><td>Dark violet metal, a mint display and a magenta accent.</td></tr>
+    </tbody>
+</table></div>
+<p>The built-in skins are themselves <code>skin.toml</code> files, compiled into the program.</p>
+
+<h2 id="install">Install a skin</h2>
+<p>User skins live in the <code>skins</code> folder inside Nastro's configuration folder. Create it if it does not exist.</p>
+<div class="table"><table>
+    <thead><tr><th>System</th><th>Folder</th></tr></thead>
+    <tbody>
+        <tr><td>Linux</td><td><code>~/.config/nastro/skins/</code> (<code>$XDG_CONFIG_HOME/nastro/skins/</code>)</td></tr>
+        <tr><td>macOS</td><td><code>~/Library/Application Support/nastro/skins/</code></td></tr>
+        <tr><td>Windows</td><td><code>%APPDATA%\nastro\skins\</code></td></tr>
+    </tbody>
+</table></div>
+<p>A skin is one of:</p>
+<ul>
+    <li>a single file, <code>skins/&lt;id&gt;.toml</code>, or</li>
+    <li>a folder, <code>skins/&lt;id&gt;/skin.toml</code>, for skins that will carry extra files later.</li>
+</ul>
+<p>The file or folder name is the skin id. It must not be <code>silver</code>, <code>graphite</code>, <code>porcelain</code> or <code>nebula</code>, and two skins cannot share an id. Copy the file there and pick the skin in the app.</p>
+<div class="callout tip">
+    <p class="title">Loading skins</p>
+    <p>The format is final for version 1, but the app was still being written when this page was last edited. If your skin does not show up, check the <a href="troubleshooting.html#logs">log</a>: a skin with an error is skipped and the message names the key.</p>
+</div>
+
+<h2>The skin.toml format</h2>
+<p>A skin file has four sections:</p>
+<div class="table"><table>
+    <thead><tr><th>Section</th><th>Content</th></tr></thead>
+    <tbody>
+        <tr><td><code>[skin]</code></td><td><code>name</code>, the display name (required), and <code>format</code>, which must be <code>1</code>.</td></tr>
+        <tr><td><code>[font]</code></td><td>Font family names for <code>ui</code>, <code>mono</code> and <code>lcd</code> (the clock and the scrolling title).</td></tr>
+        <tr><td><code>[color]</code></td><td>All the colors of the frame, controls, display, visualizer, accent and LEDs, plus <code>frame_brush</code>, the opacity of the brushed texture (0 to 0.2).</td></tr>
+        <tr><td><code>[playlist]</code></td><td>The playlist colors: <code>bg</code>, <code>fg</code>, <code>current</code>, <code>selected_bg</code> and <code>index</code>.</td></tr>
+    </tbody>
+</table></div>
+<p>A color is <code>"#rgb"</code>, <code>"#rrggbb"</code> or <code>"#rrggbbaa"</code>, where the last pair is the opacity. A missing key takes its value from Silver and produces a warning. An invalid color, a wrong type or a <code>format</code> other than 1 is an error and the skin is not loaded.</p>
+```toml title="my-skin.toml (shortened)"
+[skin]
+name = "My skin"
+format = 1
+
+[font]
+lcd = "Share Tech Mono"
+
+[color]
+accent = "#36b4ff"
+accent_ink = "#0f6fae"
+lcd_fg = "#a6e6ff"
+
+[playlist]
+bg = "#163a62"
+fg = "#cfe0f2"
+current = "#ffffff"
+selected_bg = "#2f6aa5"
+index = "#8fb0d2"
+```
+<p>The complete list of keys, the contrast rule that readable skins follow and the full Silver example are in the <a href="https://github.com/tanisperez/nastro/blob/main/docs/skin-format.md">skin format reference</a> on GitHub.</p>
+
+<h2>Classic skins</h2>
+<p>Importing classic skins (the <code>.wsz</code> archives) is planned. It is not available yet.</p>

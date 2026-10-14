@@ -1,0 +1,88 @@
+# Publishes site/ to GitHub Pages (nastro.tanis.codes, provisional). The site is rebuilt from
+# scratch on every run, there is no gh-pages branch (docs/releasing.md). The signed APT and DNF
+# repositories are added to the same upload from the deb and rpm files of the last stable
+# releases. They are skipped until the GPG_PRIVATE_KEY secret exists and a stable release does.
+name: Website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "packaging/linux/repo.sh"
+      - ".github/workflows/website.yml"
+  # A stable release publishes new packages. Pre-releases never enter the repositories.
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Generates site/docs/ from site/docs-src/. Fails on a broken link or anchor between pages.
+      - name: Build the documentation
+        run: python3 site/docs-src/build.py
+
+      # site/docs-src holds the sources of site/docs, not pages.
+      - name: Assemble the site
+        run: rsync -a --exclude docs-src/ --exclude README.md site/ _site/
+
+      - name: Install the repository tools
+        if: env.GPG_PRIVATE_KEY != ''
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq apt-utils createrepo-c rpm
+
+      # The last 3 stable releases stay in the repositories, older ones remain on Releases.
+      - name: Build the APT and DNF repositories
+        if: env.GPG_PRIVATE_KEY != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          tags=$(gh release list --exclude-pre-releases --exclude-drafts --limit 3 \
+              --json tagName -q '.[].tagName')
+          if [ -z "$tags" ]; then
+            echo "No stable release yet, skipping the Linux repositories."
+            exit 0
+          fi
+          mkdir packages
+          for tag in $tags; do
+            gh release download "$tag" --pattern '*.deb' --pattern '*.rpm' --dir packages
+          done
+
+          export GNUPGHOME=$RUNNER_TEMP/gnupg
+          mkdir -m 700 "$GNUPGHOME"
+          printf '%s' "$GPG_PASSPHRASE" > "$RUNNER_TEMP/gpg-pass"
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          export GPG_KEY_ID=$(gpg --batch --list-secret-keys --with-colons | awk -F: '/^fpr/ {print $10; exit}')
+          export GPG_PASSPHRASE_FILE=$RUNNER_TEMP/gpg-pass
+
+          for what in apt rpm key; do
+            packaging/linux/repo.sh "$what" packages _site
+          done
+          rm -rf "$GNUPGHOME" "$RUNNER_TEMP/gpg-pass"
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

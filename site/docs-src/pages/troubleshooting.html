@@ -1,0 +1,36 @@
+title: Troubleshooting
+description: What to check when Nastro plays no sound, and how to find and raise the log.
+---
+<h1>Troubleshooting</h1>
+<p class="lead">Most problems are one of two kinds: the sound goes to the wrong place, or Nastro cannot read a file. The log says which.</p>
+
+<h2 id="no-sound">No sound</h2>
+<p>Nastro plays through your system's default audio output. If a track is playing, the clock is moving and you hear nothing:</p>
+<ol>
+    <li><strong>Check the default output device.</strong> In your system sound settings, make sure the default output is the speakers or headphones you expect, and that it is not muted. Nastro follows the default device at the moment playback starts.</li>
+    <li><strong>Check the volume</strong> of Nastro itself and of the system mixer. Some mixers keep a separate volume for each application.</li>
+    <li><strong>On Linux, check the sound server.</strong> Nastro talks to ALSA. With PipeWire or PulseAudio, the ALSA plugin that routes it to the server must be installed: <code>pipewire-alsa</code> (or <code>pipewire-audio</code>) for PipeWire, <code>pulseaudio-alsa</code> (the <code>alsa-plugins</code> package on some distributions) for PulseAudio. Without it, Nastro may open a raw hardware device that another program is already using.</li>
+    <li><strong>Check that something else is not holding the device.</strong> With plain ALSA, only one program can use a card at a time.</li>
+    <li><strong>Look at the log</strong>, see below. A failure to open the output device is logged with the reason.</li>
+</ol>
+<div class="callout tip">
+    <p class="title">Quick test</p>
+    <p>Play any file with another program or run <code>speaker-test -c 2</code>. If that is silent too, the problem is in your system's audio setup, not in Nastro.</p>
+</div>
+
+<h2>A file does not play</h2>
+<p>Nastro plays FLAC, MP3, Ogg Vorbis, WAV, AIFF and AAC in M4A files. A file that is truncated, protected by DRM or in another format is skipped, and the reason is written to the log.</p>
+
+<h2 id="logs">The log</h2>
+<p>The log file is in the folder listed under <a href="files-and-folders.html#logs">Files and folders</a>. On Linux:</p>
+```shell
+$ tail -f ~/.local/state/nastro/nastro.log
+```
+<p>By default it records informational messages, warnings and errors. To see what Nastro is doing, start it with a more detailed level:</p>
+```shell
+$ NASTRO_LOG=debug nastro
+```
+<p><code>NASTRO_LOG</code> takes <code>off</code>, <code>error</code>, <code>warn</code>, <code>info</code>, <code>debug</code> or <code>trace</code>. It overrides the level for that run only.</p>
+
+<h2>Reporting a problem</h2>
+<p>Open an issue on <a href="https://github.com/tanisperez/nastro/issues">GitHub</a> with your system, how you installed Nastro and the relevant lines of a <code>NASTRO_LOG=debug</code> log. The log holds file paths, so look it over before posting it.</p>

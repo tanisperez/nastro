@@ -1,0 +1,54 @@
+title: Files and folders
+description: Every file Nastro reads and writes on your system: settings, session state, playlists, skins and logs.
+---
+<h1>Files and folders</h1>
+<p class="lead">Nastro never writes anything next to your music. Its own state lives in the standard folders of each system, and nothing is stored or sent anywhere else.</p>
+
+<h2>Your music</h2>
+<p>Nastro only reads your audio files. It does not move, rename, tag or copy them.</p>
+
+<h2>Configuration</h2>
+<p>Settings, the saved session state and your skins.</p>
+<div class="table"><table>
+    <thead><tr><th>System</th><th>Folder</th></tr></thead>
+    <tbody>
+        <tr><td>Linux</td><td><code>~/.config/nastro/</code> (<code>$XDG_CONFIG_HOME/nastro/</code>)</td></tr>
+        <tr><td>macOS</td><td><code>~/Library/Application Support/nastro/</code></td></tr>
+        <tr><td>Windows</td><td><code>%APPDATA%\nastro\</code></td></tr>
+    </tbody>
+</table></div>
+<div class="table"><table>
+    <thead><tr><th>Path</th><th>Contents</th></tr></thead>
+    <tbody>
+        <tr><td><code>settings.toml</code></td><td>Your settings. A plain TOML file you can read and edit while Nastro is closed.</td></tr>
+        <tr><td>Session state</td><td>What Nastro restores at the next start, such as where the panels were. It is kept in this folder too.</td></tr>
+        <tr><td><code>skins/</code></td><td>Your own skins, see <a href="skins.html#install">Install a skin</a>.</td></tr>
+    </tbody>
+</table></div>
+
+<h2>Data</h2>
+<p>Your playlists.</p>
+<div class="table"><table>
+    <thead><tr><th>System</th><th>Folder</th></tr></thead>
+    <tbody>
+        <tr><td>Linux</td><td><code>~/.local/share/nastro/playlists/</code> (<code>$XDG_DATA_HOME/nastro/playlists/</code>)</td></tr>
+        <tr><td>macOS</td><td><code>~/Library/Application Support/nastro/playlists/</code></td></tr>
+        <tr><td>Windows</td><td><code>%APPDATA%\nastro\playlists\</code></td></tr>
+    </tbody>
+</table></div>
+<p>Playlists are plain M3U text files, so other players and scripts can read them.</p>
+
+<h2 id="logs">Logs</h2>
+<p>Nastro writes a log file, rotated at 5 MB, keeping the last 10 files.</p>
+<div class="table"><table>
+    <thead><tr><th>System</th><th>Folder</th></tr></thead>
+    <tbody>
+        <tr><td>Linux</td><td><code>~/.local/state/nastro/nastro.log</code> (<code>$XDG_STATE_HOME/nastro/</code>)</td></tr>
+        <tr><td>macOS</td><td><code>~/Library/Logs/Nastro/</code></td></tr>
+        <tr><td>Windows</td><td><code>%LOCALAPPDATA%\Nastro\logs\</code></td></tr>
+    </tbody>
+</table></div>
+<p>The environment variable <code>NASTRO_LOG</code> sets the level at startup, see <a href="troubleshooting.html#logs">Troubleshooting</a>.</p>
+
+<h2>Removing everything</h2>
+<p>Uninstalling Nastro leaves these folders alone. To remove all its traces, delete the configuration, data and log folders above. Your music is never in them.</p>
