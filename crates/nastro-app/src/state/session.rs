@@ -69,6 +69,9 @@ pub struct Session {
     pub playing_playlist: Option<usize>,
     /// The loaded track, an index in that playlist.
     pub current_track: Option<usize>,
+    /// Where the window's top left corner was, in screen coordinates. Never known on Wayland,
+    /// where the compositor places windows.
+    pub window_origin: Option<(f32, f32)>,
 }
 
 impl Default for Session {
@@ -86,6 +89,7 @@ impl Default for Session {
             active_playlist: 0,
             playing_playlist: None,
             current_track: None,
+            window_origin: None,
         }
     }
 }
@@ -262,6 +266,10 @@ fn parse_session(text: &str) -> Session {
         session.playing_playlist = index(lists, "playing");
         session.current_track = index(lists, "current");
     }
+
+    if let Some(window) = table.get("window").and_then(toml::Value::as_table) {
+        session.window_origin = number(window, "x").zip(number(window, "y"));
+    }
     session
 }
 
@@ -346,6 +354,13 @@ fn serialize_session(session: &Session) -> String {
         lists.insert("current".into(), (current as i64).into());
     }
     table.insert("playlists".into(), lists.into());
+
+    if let Some((x, y)) = session.window_origin {
+        let mut window = toml::Table::new();
+        window.insert("x".into(), f64::from(x).into());
+        window.insert("y".into(), f64::from(y).into());
+        table.insert("window".into(), window.into());
+    }
     toml::to_string(&table).unwrap_or_default()
 }
 
@@ -380,6 +395,7 @@ mod tests {
             active_playlist: 1,
             playing_playlist: Some(0),
             current_track: Some(4),
+            window_origin: Some((120.0, 80.0)),
         };
         assert_eq!(parse_session(&serialize_session(&session)), session);
     }

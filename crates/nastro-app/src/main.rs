@@ -9,6 +9,8 @@
 mod actions;
 mod app;
 mod assets;
+#[cfg(unix)]
+mod instance;
 mod keymap;
 mod logging;
 mod state;
@@ -54,14 +56,39 @@ fn main() {
     state::locale::apply(language);
     log::info!("language: {}", language.code());
 
-    let session = session::load_session();
-    let tabs = load_playlists(&session);
     let arguments: Vec<PathBuf> = std::env::args_os().skip(1).map(PathBuf::from).collect();
+
+    // One player at a time: a second launch hands its files to the first and leaves.
+    #[cfg(unix)]
+    let socket = instance::socket_path();
+    #[cfg(unix)]
+    let listener = match socket
+        .as_deref()
+        .map(|path| instance::claim(path, &arguments))
+    {
+        Some(instance::Claim::Handed) => {
+            log::info!("handed {} files to the running Nastro", arguments.len());
+            return;
+        }
+        Some(instance::Claim::Primary(listener)) => Some(listener),
+        Some(instance::Claim::Standalone) | None => None,
+    };
+
+    let session = session::load_session();
+    let window_origin = session.window_origin;
+    let tabs = load_playlists(&session);
 
     let application = gpui_kit::application().with_assets(assets::Assets);
     // Files the OS hands over while running (macOS open events). They can arrive before the
     // window exists, so they wait in a channel that a task drains once the models are ready.
     let (opened_tx, opened_rx) = async_channel::unbounded::<Vec<PathBuf>>();
+    #[cfg(unix)]
+    if let Some(listener) = listener {
+        let sender = opened_tx.clone();
+        instance::serve(listener, move |paths| {
+            let _ = sender.try_send(paths);
+        });
+    }
     application.on_open_urls(move |urls| {
         let paths = state::files::paths_from_urls(&urls);
         if !paths.is_empty() {
@@ -82,8 +109,12 @@ fn main() {
         cx.set_global(models);
 
         // Quitting from the OS (the dock, a session logout) saves like Quit does.
-        cx.on_app_quit(|cx| {
+        cx.on_app_quit(move |cx| {
             app::persist::save_all(cx);
+            #[cfg(unix)]
+            if let Some(socket) = &socket {
+                instance::release(socket);
+            }
             async {}
         })
         .detach();
@@ -99,18 +130,35 @@ fn main() {
         })
         .detach();
 
-        open_main_window(cx);
+        open_main_window(cx, window_origin);
 
         if !arguments.is_empty() {
             app::commands::open_paths(arguments, true, cx);
         }
         cx.spawn(async move |cx| {
             while let Ok(paths) = opened_rx.recv().await {
-                cx.update(|cx| app::commands::open_paths(paths, true, cx));
+                cx.update(|cx| {
+                    if paths.is_empty() {
+                        raise_main_window(cx);
+                    } else {
+                        app::commands::open_paths(paths, true, cx);
+                    }
+                });
             }
         })
         .detach();
     });
+}
+
+/// Brings the main window to the front, for a second launch without files.
+fn raise_main_window(cx: &mut gpui_kit::App) {
+    let main = cx
+        .windows()
+        .into_iter()
+        .find_map(|window| window.downcast::<NastroWindow>());
+    if let Some(main) = main {
+        let _ = main.update(cx, |_, window, _| window.activate_window());
+    }
 }
 
 /// The playlists of the session, in tab order. Missing files are skipped.
@@ -160,11 +208,25 @@ fn build_models(
     }
 }
 
-/// Opens the transparent main window, sized to the docked panels and centred on the screen.
-fn open_main_window(cx: &mut gpui_kit::App) {
+/// Opens the transparent main window, sized to the docked panels, where it was last time when
+/// that place is still on a display, and centred otherwise. On Linux the compositor has the last
+/// word: Wayland never tells a client where its window is, and KWin under X11 places new windows
+/// itself, so the remembered place only takes effect on macOS and Windows.
+fn open_main_window(cx: &mut gpui_kit::App, origin: Option<(f32, f32)>) {
     let size: Size<_> = app::models(cx).shell.read(cx).window_size();
+    let remembered = origin
+        .map(|(x, y)| Bounds {
+            origin: gpui_kit::point(gpui_kit::px(x), gpui_kit::px(y)),
+            size,
+        })
+        .filter(|bounds| {
+            cx.displays()
+                .iter()
+                .any(|display| display.bounds().contains(&bounds.center()))
+        });
+    let bounds = remembered.unwrap_or_else(|| Bounds::centered(None, size, cx));
     let options = WindowOptions {
-        window_bounds: Some(WindowBounds::Windowed(Bounds::centered(None, size, cx))),
+        window_bounds: Some(WindowBounds::Windowed(bounds)),
         // The panels draw their own title bars: no OS title bar and no frame.
         titlebar: None,
         window_decorations: Some(WindowDecorations::Client),

@@ -75,9 +75,19 @@ Rendering cost is kept proportional to what changes:
 - The playlist renders only its visible rows (`uniform_list`); the filter result is cached
   under the playlist's generation counter.
 
-Measured on 2026-10-14 (release build, Linux, Intel Iris Xe): about 10 % of one core while
-playing before the `Frame` split, and no measurable main thread work while paused. RSS about
-125 MB, like Postino.
+Measured on 2026-10-14 (release build, Linux, Intel Iris Xe, the default layout): about 7 % of
+one core while playing, no measurable main thread work while paused, RSS about 130 MB, like
+Postino. Most of the playing cost is gpui drawing the whole window on every frame, so it grows a
+little with each panel shown; the brushed metal is one image per panel for that reason (a quad
+per stripe cost about 2 % of a core on its own).
+
+### One instance
+
+On Linux and macOS a second launch (a file opened with Nastro from the file manager) connects to
+the first one's local socket (`$XDG_RUNTIME_DIR/nastro.sock` on Linux), hands it its files and
+exits (`instance.rs`); a launch without files brings the window to the front. A stale socket
+left by a crash is replaced. Windows has no Unix sockets in `std`, so every launch there is its
+own instance for now.
 
 ### Engine events
 
@@ -121,7 +131,7 @@ do not, so the main window has none. Preferences and About are ordinary chrome w
 | --- | --- |
 | `<config dir>/nastro/settings.toml` | Settings, written on every change. `~/.config/nastro/` on Linux. |
 | `<config dir>/nastro/skins/` | The user's own skins (read only). |
-| `<state dir>/nastro/session.toml` | Volume, balance, shuffle, repeat, equalizer, panel layout, playlist order, the loaded track. `~/.local/state/nastro/` on Linux; the local data folder on macOS and Windows. |
+| `<state dir>/nastro/session.toml` | Volume, balance, shuffle, repeat, equalizer, panel layout, playlist order, the loaded track, the window position (used on macOS and Windows only: Wayland never reports it and KWin under X11 places new windows itself). `~/.local/state/nastro/` on Linux; the local data folder on macOS and Windows. |
 | `<data dir>/nastro/playlists/playlist-<n>.m3u8` | One extended M3U file per playlist tab, named with `#PLAYLIST`. `~/.local/share/nastro/playlists/` on Linux. |
 | Logs | See `AGENTS.md`, "Logging". |
 
@@ -147,5 +157,5 @@ Tracked in the release milestone once the repository exists on GitHub (see `AGEN
 - The clock glow and the title text shadow of the design: gpui has no text shadow.
 - Reordering playlist rows by dragging (Alt+Up and Alt+Down move the selection), and a context
   menu on rows.
-- Files opened from the OS while running (macOS open events, a second instance on Linux).
+- A single instance on Windows (named pipes).
 - Opus, WavPack and APE decoding; the in-app updater (`docs/releasing.md`).

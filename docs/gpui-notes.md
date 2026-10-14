@@ -115,4 +115,7 @@ Note that `gpui-kit = "0.7.0"` in a fresh lockfile resolves to a newer 0.7.x tha
   so move the pointer to `(X + P * f) / f`. Relative moves are not scaled.
 - Another session can share the same pointer: coordinate before driving the desktop.
 - Use an isolated `HOME`, `XDG_CONFIG_HOME`, `XDG_STATE_HOME` and `XDG_DATA_HOME`, so tests never
-  touch the real settings, session and playlists.
+  touch the real settings, session and playlists. An isolated `XDG_RUNTIME_DIR` keeps the test
+  instance off the real `nastro.sock`, but it must be short (a socket path is limited to 108
+  bytes) and must link the real `wayland-0`, `pipewire-0` and `pulse` sockets, or there is no
+  window on Wayland and no sound anywhere.

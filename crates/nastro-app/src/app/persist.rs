@@ -38,8 +38,8 @@ pub fn schedule(cx: &mut App) {
     .detach();
 }
 
-/// The session as the models hold it now.
-pub fn snapshot(cx: &App) -> Option<Session> {
+/// The session as the models hold it now, with the main window's position when known.
+pub fn snapshot(cx: &App, window_origin: Option<(f32, f32)>) -> Option<Session> {
     let models = cx.try_global::<crate::app::Models>()?;
     let transport = models.transport.read(cx);
     let library = models.library.read(cx);
@@ -62,12 +62,28 @@ pub fn snapshot(cx: &App) -> Option<Session> {
         active_playlist: library.active,
         playing_playlist,
         current_track,
+        window_origin,
     })
+}
+
+/// Where the main window is on screen. `None` on Wayland, where it is never known (gpui reports
+/// the origin as zero there), and when the main window is closed.
+fn main_window_origin(cx: &mut App) -> Option<(f32, f32)> {
+    let handle = cx
+        .windows()
+        .into_iter()
+        .find_map(|window| window.downcast::<crate::views::window::NastroWindow>())?;
+    let origin = handle
+        .update(cx, |_, window, _| window.bounds().origin)
+        .ok()?;
+    let (x, y) = (f32::from(origin.x), f32::from(origin.y));
+    (x != 0.0 || y != 0.0).then_some((x, y))
 }
 
 /// Writes the session now.
 pub fn save_now(cx: &mut App) {
-    if let Some(session) = snapshot(cx) {
+    let origin = main_window_origin(cx);
+    if let Some(session) = snapshot(cx, origin) {
         save_session(&session);
         log::debug!("session saved");
     }
