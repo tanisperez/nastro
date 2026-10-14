@@ -1,0 +1,149 @@
+_version: 2
+
+settings.theme.system:
+  en: System
+  es: Sistema
+  gl: Sistema
+  it: Sistema
+settings.theme.light:
+  en: Light
+  es: Claro
+  gl: Claro
+  it: Chiaro
+settings.theme.dark:
+  en: Dark
+  es: Oscuro
+  gl: Escuro
+  it: Scuro
+settings.log_level.off:
+  en: "Off"
+  es: Desactivado
+  gl: Desactivado
+  it: Disattivato
+settings.log_level.error:
+  en: Errors
+  es: Errores
+  gl: Erros
+  it: Errori
+settings.log_level.warn:
+  en: Warnings
+  es: Avisos
+  gl: Avisos
+  it: Avvisi
+settings.log_level.info:
+  en: Information
+  es: Información
+  gl: Información
+  it: Informazioni
+settings.log_level.debug:
+  en: Debug
+  es: Depuración
+  gl: Depuración
+  it: Debug
+settings.log_level.trace:
+  en: Trace
+  es: Traza
+  gl: Traza
+  it: Traccia
+
+preferences.title:
+  en: Preferences
+  es: Preferencias
+  gl: Preferencias
+  it: Preferenze
+preferences.language:
+  en: Language
+  es: Idioma
+  gl: Idioma
+  it: Lingua
+preferences.language_auto:
+  en: Automatic
+  es: Automático
+  gl: Automático
+  it: Automatica
+preferences.theme:
+  en: Menus and windows
+  es: Menús y ventanas
+  gl: Menús e xanelas
+  it: Menu e finestre
+preferences.theme_hint:
+  en: The skin keeps its own colors.
+  es: El aspecto mantiene sus propios colores.
+  gl: O aspecto mantén as súas propias cores.
+  it: La skin mantiene i propri colori.
+preferences.skin:
+  en: Skin
+  es: Aspecto
+  gl: Aspecto
+  it: Skin
+preferences.skin_hint:
+  en: "Your own skins go in %{folder}"
+  es: "Tus propios aspectos van en %{folder}"
+  gl: "Os teus propios aspectos van en %{folder}"
+  it: "Le tue skin vanno in %{folder}"
+preferences.skin_scale:
+  en: Skin size
+  es: Tamaño del aspecto
+  gl: Tamaño do aspecto
+  it: Dimensione della skin
+preferences.clock:
+  en: Clock
+  es: Reloj
+  gl: Reloxo
+  it: Orologio
+preferences.clock_elapsed:
+  en: Elapsed time
+  es: Tiempo transcurrido
+  gl: Tempo transcorrido
+  it: Tempo trascorso
+preferences.clock_remaining:
+  en: Remaining time
+  es: Tiempo restante
+  gl: Tempo restante
+  it: Tempo rimanente
+preferences.log_level:
+  en: Log level
+  es: Nivel de registro
+  gl: Nivel de rexistro
+  it: Livello di log
+preferences.log_hint:
+  en: "Log file: %{file}"
+  es: "Archivo de registro: %{file}"
+  gl: "Ficheiro de rexistro: %{file}"
+  it: "File di log: %{file}"
+preferences.saved_to:
+  en: "Saved to %{file}"
+  es: "Se guarda en %{file}"
+  gl: "Gárdase en %{file}"
+  it: "Salvato in %{file}"
+
+about.title:
+  en: About Nastro
+  es: Acerca de Nastro
+  gl: Acerca de Nastro
+  it: Informazioni su Nastro
+about.version:
+  en: "Version %{version}"
+  es: "Versión %{version}"
+  gl: "Versión %{version}"
+  it: "Versione %{version}"
+about.tagline:
+  en: A lightweight, skinnable music player for your own files.
+  es: Un reproductor de música ligero y personalizable para tus propios archivos.
+  gl: Un reprodutor de música lixeiro e personalizable para os teus propios ficheiros.
+  it: Un lettore musicale leggero e personalizzabile per i tuoi file.
+about.source:
+  en: Source code
+  es: Código fuente
+  gl: Código fonte
+  it: Codice sorgente
+about.license:
+  en: Open source under the Apache License 2.0.
+  es: Código abierto bajo la licencia Apache 2.0.
+  gl: Código aberto baixo a licenza Apache 2.0.
+  it: Open source con licenza Apache 2.0.
+about.credits:
+  en: Fonts Geist and Geist Mono (Vercel) and Share Tech Mono (Carrois Type Design), under the SIL Open Font License. Audio decoding by Symphonia.
+  es: Fuentes Geist y Geist Mono (Vercel) y Share Tech Mono (Carrois Type Design), bajo la SIL Open Font License. Decodificación de audio con Symphonia.
+  gl: Fontes Geist e Geist Mono (Vercel) e Share Tech Mono (Carrois Type Design), baixo a SIL Open Font License. Decodificación de audio con Symphonia.
+  it: Font Geist e Geist Mono (Vercel) e Share Tech Mono (Carrois Type Design), con licenza SIL Open Font License. Decodifica audio con Symphonia.

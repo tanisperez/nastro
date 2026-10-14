@@ -1,0 +1,165 @@
+_version: 2
+
+panel.player:
+  en: NASTRO
+  es: NASTRO
+  gl: NASTRO
+  it: NASTRO
+panel.equalizer:
+  en: EQUALIZER
+  es: ECUALIZADOR
+  gl: ECUALIZADOR
+  it: EQUALIZZATORE
+panel.playlist:
+  en: PLAYLIST
+  es: LISTA DE REPRODUCCIÓN
+  gl: LISTA DE REPRODUCIÓN
+  it: PLAYLIST
+
+player.shuffle:
+  en: SHUFFLE
+  es: ALEATORIO
+  gl: ALEATORIO
+  it: CASUALE
+player.repeat:
+  en: REPEAT
+  es: REPETIR
+  gl: REPETIR
+  it: RIPETI
+player.eq:
+  en: EQ
+  es: EQ
+  gl: EQ
+  it: EQ
+player.pl:
+  en: PL
+  es: LISTA
+  gl: LISTA
+  it: PL
+player.balance:
+  en: BAL
+  es: BAL
+  gl: BAL
+  it: BIL
+
+lcd.stereo:
+  en: STEREO
+  es: ESTÉREO
+  gl: ESTÉREO
+  it: STEREO
+lcd.mono:
+  en: MONO
+  es: MONO
+  gl: MONO
+  it: MONO
+lcd.idle:
+  en: Nastro. Drop music here or press L to open files.
+  es: Nastro. Suelta música aquí o pulsa L para abrir archivos.
+  gl: Nastro. Solta música aquí ou preme L para abrir ficheiros.
+  it: Nastro. Trascina qui la musica o premi L per aprire i file.
+
+eq.on:
+  en: "ON"
+  es: "ON"
+  gl: "ON"
+  it: "ON"
+eq.auto:
+  en: AUTO
+  es: AUTO
+  gl: AUTO
+  it: AUTO
+eq.presets:
+  en: PRESETS
+  es: PERFILES
+  gl: PERFÍS
+  it: PRESET
+eq.reset:
+  en: RESET
+  es: REINICIAR
+  gl: REINICIAR
+  it: AZZERA
+eq.preamp:
+  en: PRE
+  es: PRE
+  gl: PRE
+  it: PRE
+eq.preset.flat:
+  en: Flat
+  es: Plano
+  gl: Plano
+  it: Piatto
+eq.preset.rock:
+  en: Rock
+  es: Rock
+  gl: Rock
+  it: Rock
+eq.preset.pop:
+  en: Pop
+  es: Pop
+  gl: Pop
+  it: Pop
+eq.preset.jazz:
+  en: Jazz
+  es: Jazz
+  gl: Jazz
+  it: Jazz
+eq.preset.classical:
+  en: Classical
+  es: Clásica
+  gl: Clásica
+  it: Classica
+eq.preset.dance:
+  en: Dance
+  es: Dance
+  gl: Dance
+  it: Dance
+eq.preset.electronic:
+  en: Electronic
+  es: Electrónica
+  gl: Electrónica
+  it: Elettronica
+eq.preset.hip_hop:
+  en: Hip hop
+  es: Hip hop
+  gl: Hip hop
+  it: Hip hop
+eq.preset.acoustic:
+  en: Acoustic
+  es: Acústica
+  gl: Acústica
+  it: Acustica
+eq.preset.vocal:
+  en: Vocal
+  es: Voz
+  gl: Voz
+  it: Voce
+eq.preset.bass_boost:
+  en: Bass boost
+  es: Más graves
+  gl: Máis graves
+  it: Più bassi
+eq.preset.treble_boost:
+  en: Treble boost
+  es: Más agudos
+  gl: Máis agudos
+  it: Più alti
+eq.preset.loudness:
+  en: Loudness
+  es: Sonoridad
+  gl: Sonoridade
+  it: Loudness
+eq.preset.soft:
+  en: Soft
+  es: Suave
+  gl: Suave
+  it: Morbido
+eq.preset.headphones:
+  en: Headphones
+  es: Auriculares
+  gl: Auriculares
+  it: Cuffie
+eq.preset.small_speakers:
+  en: Small speakers
+  es: Altavoces pequeños
+  gl: Altofalantes pequenos
+  it: Altoparlanti piccoli

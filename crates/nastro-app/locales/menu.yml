@@ -1,0 +1,227 @@
+_version: 2
+
+menu.file:
+  en: File
+  es: Archivo
+  gl: Ficheiro
+  it: File
+menu.play:
+  en: Play
+  es: Reproducir
+  gl: Reproducir
+  it: Riproduci
+menu.options:
+  en: Options
+  es: Opciones
+  gl: Opcións
+  it: Opzioni
+menu.view:
+  en: View
+  es: Ver
+  gl: Ver
+  it: Visualizza
+menu.help:
+  en: Help
+  es: Ayuda
+  gl: Axuda
+  it: Aiuto
+
+menu.file.open_files:
+  en: Open files...
+  es: Abrir archivos...
+  gl: Abrir ficheiros...
+  it: Apri file...
+menu.file.add_files:
+  en: Add files...
+  es: Añadir archivos...
+  gl: Engadir ficheiros...
+  it: Aggiungi file...
+menu.file.add_folder:
+  en: Add folder...
+  es: Añadir carpeta...
+  gl: Engadir cartafol...
+  it: Aggiungi cartella...
+menu.file.new_playlist:
+  en: New playlist
+  es: Nueva lista
+  gl: Nova lista
+  it: Nuova playlist
+menu.file.rename_playlist:
+  en: Rename playlist
+  es: Renombrar lista
+  gl: Renomear lista
+  it: Rinomina playlist
+menu.file.export_playlist:
+  en: Export playlist...
+  es: Exportar lista...
+  gl: Exportar lista...
+  it: Esporta playlist...
+menu.file.close_playlist:
+  en: Close playlist
+  es: Cerrar lista
+  gl: Pechar lista
+  it: Chiudi playlist
+menu.file.preferences:
+  en: Preferences...
+  es: Preferencias...
+  gl: Preferencias...
+  it: Preferenze...
+menu.file.quit:
+  en: Quit
+  es: Salir
+  gl: Saír
+  it: Esci
+
+menu.play.play:
+  en: Play
+  es: Reproducir
+  gl: Reproducir
+  it: Riproduci
+menu.play.pause:
+  en: Pause
+  es: Pausa
+  gl: Pausa
+  it: Pausa
+menu.play.stop:
+  en: Stop
+  es: Detener
+  gl: Deter
+  it: Ferma
+menu.play.previous:
+  en: Previous
+  es: Anterior
+  gl: Anterior
+  it: Precedente
+menu.play.next:
+  en: Next
+  es: Siguiente
+  gl: Seguinte
+  it: Successiva
+menu.play.seek_forward:
+  en: Forward 5 seconds
+  es: Adelantar 5 segundos
+  gl: Adiantar 5 segundos
+  it: Avanti di 5 secondi
+menu.play.seek_backward:
+  en: Back 5 seconds
+  es: Retroceder 5 segundos
+  gl: Retroceder 5 segundos
+  it: Indietro di 5 secondi
+menu.play.shuffle:
+  en: Shuffle
+  es: Aleatorio
+  gl: Aleatorio
+  it: Casuale
+menu.play.repeat:
+  en: Repeat
+  es: Repetir
+  gl: Repetir
+  it: Ripeti
+
+menu.options.skin:
+  en: Skin
+  es: Aspecto
+  gl: Aspecto
+  it: Skin
+menu.options.skin_scale:
+  en: Skin size
+  es: Tamaño del aspecto
+  gl: Tamaño do aspecto
+  it: Dimensione della skin
+menu.options.visualizer:
+  en: Visualizer
+  es: Visualizador
+  gl: Visualizador
+  it: Visualizzatore
+menu.options.visualizer_spectrum:
+  en: Spectrum
+  es: Espectro
+  gl: Espectro
+  it: Spettro
+menu.options.visualizer_oscilloscope:
+  en: Oscilloscope
+  es: Osciloscopio
+  gl: Osciloscopio
+  it: Oscilloscopio
+menu.options.visualizer_off:
+  en: "Off"
+  es: Desactivado
+  gl: Desactivado
+  it: Disattivato
+menu.options.remaining_time:
+  en: Show remaining time
+  es: Mostrar tiempo restante
+  gl: Mostrar tempo restante
+  it: Mostra tempo rimanente
+menu.options.reload_skins:
+  en: Reload skins
+  es: Recargar aspectos
+  gl: Recargar aspectos
+  it: Ricarica skin
+menu.options.open_skins_folder:
+  en: Open skins folder
+  es: Abrir la carpeta de aspectos
+  gl: Abrir o cartafol de aspectos
+  it: Apri la cartella delle skin
+
+menu.view.equalizer:
+  en: Equalizer
+  es: Ecualizador
+  gl: Ecualizador
+  it: Equalizzatore
+menu.view.playlist:
+  en: Playlist
+  es: Lista de reproducción
+  gl: Lista de reprodución
+  it: Playlist
+menu.view.layout:
+  en: Layout
+  es: Disposición
+  gl: Disposición
+  it: Disposizione
+menu.view.layout_a:
+  en: Column
+  es: Columna
+  gl: Columna
+  it: Colonna
+menu.view.layout_b:
+  en: Equalizer at the right
+  es: Ecualizador a la derecha
+  gl: Ecualizador á dereita
+  it: Equalizzatore a destra
+menu.view.layout_c:
+  en: Playlist at the side (default)
+  es: Lista al lado (predeterminada)
+  gl: Lista ao lado (predeterminada)
+  it: Playlist a lato (predefinita)
+menu.view.layout_d:
+  en: Strip
+  es: Tira
+  gl: Tira
+  it: Striscia
+menu.view.shade_player:
+  en: Collapse player
+  es: Contraer reproductor
+  gl: Contraer reprodutor
+  it: Comprimi lettore
+menu.view.shade_equalizer:
+  en: Collapse equalizer
+  es: Contraer ecualizador
+  gl: Contraer ecualizador
+  it: Comprimi equalizzatore
+menu.view.shade_playlist:
+  en: Collapse playlist
+  es: Contraer lista
+  gl: Contraer lista
+  it: Comprimi playlist
+
+menu.help.user_guide:
+  en: User guide
+  es: Guía de uso
+  gl: Guía de uso
+  it: Guida utente
+menu.help.about:
+  en: About Nastro
+  es: Acerca de Nastro
+  gl: Acerca de Nastro
+  it: Informazioni su Nastro

@@ -1,0 +1,122 @@
+_version: 2
+
+playlist.default_name:
+  en: Playlist %{number}
+  es: Lista %{number}
+  gl: Lista %{number}
+  it: Playlist %{number}
+playlist.filter:
+  en: Filter
+  es: Filtrar
+  gl: Filtrar
+  it: Filtra
+playlist.tracks.one:
+  en: "%{count} track"
+  es: "%{count} pista"
+  gl: "%{count} pista"
+  it: "%{count} brano"
+playlist.tracks.other:
+  en: "%{count} tracks"
+  es: "%{count} pistas"
+  gl: "%{count} pistas"
+  it: "%{count} brani"
+playlist.empty:
+  en: Drop files or folders here, or use ADD.
+  es: Suelta archivos o carpetas aquí, o usa AÑADIR.
+  gl: Solta ficheiros ou cartafoles aquí, ou usa ENGADIR.
+  it: Trascina qui file o cartelle, oppure usa AGGIUNGI.
+playlist.no_match:
+  en: No tracks match this filter.
+  es: Ninguna pista coincide con este filtro.
+  gl: Ningunha pista coincide con este filtro.
+  it: Nessun brano corrisponde a questo filtro.
+playlist.add:
+  en: ADD
+  es: AÑADIR
+  gl: ENGADIR
+  it: AGGIUNGI
+playlist.remove:
+  en: REMOVE
+  es: QUITAR
+  gl: QUITAR
+  it: RIMUOVI
+playlist.select:
+  en: SELECT
+  es: SELECCIONAR
+  gl: SELECCIONAR
+  it: SELEZIONA
+playlist.sort:
+  en: SORT
+  es: ORDENAR
+  gl: ORDENAR
+  it: ORDINA
+playlist.remove_selected:
+  en: Remove selected
+  es: Quitar la selección
+  gl: Quitar a selección
+  it: Rimuovi la selezione
+playlist.crop:
+  en: Keep only selected
+  es: Dejar solo la selección
+  gl: Deixar só a selección
+  it: Mantieni solo la selezione
+playlist.clear:
+  en: Remove all
+  es: Quitar todo
+  gl: Quitar todo
+  it: Rimuovi tutto
+playlist.select_all:
+  en: Select all
+  es: Seleccionar todo
+  gl: Seleccionar todo
+  it: Seleziona tutto
+playlist.select_none:
+  en: Select none
+  es: No seleccionar nada
+  gl: Non seleccionar nada
+  it: Deseleziona tutto
+playlist.invert_selection:
+  en: Invert selection
+  es: Invertir la selección
+  gl: Inverter a selección
+  it: Inverti la selezione
+playlist.sort_title:
+  en: By title
+  es: Por título
+  gl: Por título
+  it: Per titolo
+playlist.sort_artist:
+  en: By artist
+  es: Por artista
+  gl: Por artista
+  it: Per artista
+playlist.sort_album:
+  en: By album
+  es: Por álbum
+  gl: Por álbum
+  it: Per album
+playlist.sort_file_name:
+  en: By file name
+  es: Por nombre de archivo
+  gl: Por nome de ficheiro
+  it: Per nome del file
+playlist.sort_path:
+  en: By path
+  es: Por ruta
+  gl: Por ruta
+  it: Per percorso
+playlist.sort_length:
+  en: By length
+  es: Por duración
+  gl: Por duración
+  it: Per durata
+playlist.reverse:
+  en: Reverse
+  es: Invertir el orden
+  gl: Inverter a orde
+  it: Inverti l'ordine
+playlist.randomize:
+  en: Randomize
+  es: Desordenar
+  gl: Desordenar
+  it: Mescola
