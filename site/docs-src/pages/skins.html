@@ -8,9 +8,9 @@ description: How to install a skin in Nastro, the built-in skins and a summary o
 <div class="table"><table>
     <thead><tr><th>Skin</th><th>Look</th></tr></thead>
     <tbody>
-        <tr><td>Silver</td><td>The default. Brushed light metal with a blue display.</td></tr>
+        <tr><td>Silver</td><td>The default. Light brushed aluminium, an ice blue display and a navy playlist.</td></tr>
         <tr><td>Graphite</td><td>Dark metal with an amber display.</td></tr>
-        <tr><td>Porcelain</td><td>A light, warm finish.</td></tr>
+        <tr><td>Porcelain</td><td>Matte white, a black glass display with vermilion lights and an ink black playlist.</td></tr>
         <tr><td>Nebula</td><td>Dark violet metal, a mint display and a magenta accent.</td></tr>
     </tbody>
 </table></div>
@@ -31,10 +31,13 @@ description: How to install a skin in Nastro, the built-in skins and a summary o
     <li>a single file, <code>skins/&lt;id&gt;.toml</code>, or</li>
     <li>a folder, <code>skins/&lt;id&gt;/skin.toml</code>, for skins that will carry extra files later.</li>
 </ul>
-<p>The file or folder name is the skin id. It must not be <code>silver</code>, <code>graphite</code>, <code>porcelain</code> or <code>nebula</code>, and two skins cannot share an id. Copy the file there and pick the skin in the app.</p>
+<p>The file or folder name is the skin id. It must not be <code>silver</code>, <code>graphite</code>, <code>porcelain</code> or <code>nebula</code>, and two skins cannot share an id.</p>
+<h2 id="choosing">Choosing a skin</h2>
+<p>Pick a skin in <strong>Options</strong>, <strong>Skin</strong>, or in the Skin section of <a href="settings.html">Preferences</a>. It applies at once and is remembered. The same submenu has <strong>Open skins folder</strong>, which creates the folder if needed and opens it in your file manager, and <strong>Reload skins</strong>, which reads the folder again, so a skin you copied or edited while Nastro runs shows up without restarting.</p>
+<p><strong>Options</strong>, <strong>Skin size</strong> draws any skin at 1x, 1.5x or 2x, independently of your system's display scale.</p>
 <div class="callout tip">
-    <p class="title">Loading skins</p>
-    <p>The format is final for version 1, but the app was still being written when this page was last edited. If your skin does not show up, check the <a href="troubleshooting.html#logs">log</a>: a skin with an error is skipped and the message names the key.</p>
+    <p class="title">A skin does not show up</p>
+    <p>Check the <a href="troubleshooting.html#logs">log</a>: a skin with an error is skipped and the message names the file and the key. Keys that are missing only produce a warning, and their colors come from Silver.</p>
 </div>
 
 <h2>The skin.toml format</h2>
@@ -43,7 +46,7 @@ description: How to install a skin in Nastro, the built-in skins and a summary o
     <thead><tr><th>Section</th><th>Content</th></tr></thead>
     <tbody>
         <tr><td><code>[skin]</code></td><td><code>name</code>, the display name (required), and <code>format</code>, which must be <code>1</code>.</td></tr>
-        <tr><td><code>[font]</code></td><td>Font family names for <code>ui</code>, <code>mono</code> and <code>lcd</code> (the clock and the scrolling title).</td></tr>
+        <tr><td><code>[font]</code></td><td>Font family names for <code>ui</code>, <code>mono</code> and <code>lcd</code> (the display's clock and badges; the scrolling title uses <code>mono</code>). Nastro bundles Geist, Geist Mono and Share Tech Mono; any other family must be installed on the system, or the system's default font is used.</td></tr>
         <tr><td><code>[color]</code></td><td>All the colors of the frame, controls, display, visualizer, accent and LEDs, plus <code>frame_brush</code>, the opacity of the brushed texture (0 to 0.2).</td></tr>
         <tr><td><code>[playlist]</code></td><td>The playlist colors: <code>bg</code>, <code>fg</code>, <code>current</code>, <code>selected_bg</code> and <code>index</code>.</td></tr>
     </tbody>

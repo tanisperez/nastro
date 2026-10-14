@@ -9,7 +9,15 @@ planned.
 [Website](https://nastro.tanis.codes) · [Download](https://nastro.tanis.codes/install.html) ·
 [Documentation](#documentation) (the repository and the website addresses are provisional)
 
-Screenshots coming soon.
+![Nastro in the Silver skin: the player playing a track with its spectrum visualizer, the equalizer below it and the playlist at the right.](site/img/player-silver.webp)
+
+The same window in the other built-in skins, Graphite, Porcelain and Nebula:
+
+<p>
+  <img src="site/img/player-graphite.webp" width="32%" alt="Nastro in the Graphite skin: dark graphite metal and an amber display.">
+  <img src="site/img/player-porcelain.webp" width="32%" alt="Nastro in the Porcelain skin: matte white with a black glass display and vermilion lights.">
+  <img src="site/img/player-nebula.webp" width="32%" alt="Nastro in the Nebula skin: dark violet metal, a mint display and magenta lights.">
+</p>
 
 > Status: early development. Linux comes first, and the Windows and macOS builds have not been
 > verified yet.
