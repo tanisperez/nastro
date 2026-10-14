@@ -1,5 +1,120 @@
 title: The interface
-description: The player, equalizer and playlist panels and how they dock together.
+description: A tour of Nastro's three panels, the player, the equalizer and the playlist, with every button, display and slider named, plus shade mode, docking and the four layouts.
 ---
 <h1>The interface</h1>
-<p>This page is being written.</p>
+<p class="lead">Nastro is three panels in one window: the player on top, a 10-band equalizer and the playlist. This page names every part of them, so the rest of the documentation can refer to them. How the panels look is decided by the <a href="skins.html">skin</a>, so colors and textures differ, but the parts are always the same.</p>
+
+<h2 id="player">The player</h2>
+<p>The player is the main panel, and the only one that is always shown.</p>
+
+<h3 id="title-bar">Title bar</h3>
+<p>The logo and the name <strong>NASTRO</strong> at the left, and three buttons at the right:</p>
+<ul>
+    <li><strong>Minimize</strong> sends the window to the taskbar or the dock.</li>
+    <li><strong>Collapse</strong> shrinks the player to a single bar, see <a href="#shade-mode">Shade mode</a>.</li>
+    <li><strong>Close</strong> quits Nastro.</li>
+</ul>
+<p>Dragging the title bar moves the whole window, with all the panels in their places.</p>
+
+<h3 id="menu-bar">Menu bar</h3>
+<p>Under the title bar: <strong>File</strong>, <strong>Play</strong>, <strong>Options</strong>, <strong>View</strong> and <strong>Help</strong>. Dragging an empty spot of the menu bar also moves the window. The menus are not skinned: they follow the light or dark choice made in <a href="settings.html#menus-and-windows">Settings</a>.</p>
+<div class="table"><table>
+    <thead><tr><th>Menu</th><th>Commands</th></tr></thead>
+    <tbody>
+        <tr><td>File</td><td>Open files..., Add files..., Add folder...; New playlist, Rename playlist, Export playlist..., Close playlist; Preferences...; Quit.</td></tr>
+        <tr><td>Play</td><td>Play, Pause, Stop, Previous, Next; Forward 5 seconds, Back 5 seconds; Shuffle and Repeat, which show a check mark when on.</td></tr>
+        <tr><td>Options</td><td>Skin (the list of skins, Reload skins, Open skins folder), Skin size (1x, 1.5x, 2x), Visualizer (Spectrum, Oscilloscope, Off), Show remaining time, and Preferences....</td></tr>
+        <tr><td>View</td><td>Equalizer and Playlist (check marks for the panels shown), Layout, and Collapse player, Collapse equalizer and Collapse playlist.</td></tr>
+        <tr><td>Help</td><td>User guide (opens this guide in your browser), About Nastro.</td></tr>
+    </tbody>
+</table></div>
+<p>The menus are described in context in <a href="playlists.html">Playlists</a>, <a href="playback.html">Playback</a>, <a href="skins.html">Skins</a> and <a href="settings.html">Settings</a>.</p>
+
+<h3 id="display">The display</h3>
+<p>The dark screen in the middle of the player shows what is happening:</p>
+<ul>
+    <li><strong>State glyph.</strong> A triangle while playing, two bars while paused and a square when stopped.</li>
+    <li><strong>Clock.</strong> The time played so far, as minutes and seconds (<code>01:12</code>; minutes keep counting past 99). Click it, or press <kbd>T</kbd>, to show the time <em>remaining</em> instead, with a minus sign (<code>-02:35</code>). Click again to go back. This is the same as <strong>Show remaining time</strong> in the Options menu and is remembered. When the length of a file is not known, the clock shows the elapsed time.</li>
+    <li><strong>Badges.</strong> Small labels about the file being played, from left to right: the codec (<code>FLAC</code>, <code>MP3</code>, ...), the bitrate (<code>320 kbps</code>), the sample rate (<code>44.1 kHz</code>) and the channels, which is <strong>STEREO</strong>, <strong>MONO</strong> or the count (<code>6 CH</code>). The bitrate is left out when the file does not tell it. The channels badge is the filled one.</li>
+    <li><strong>Visualizer.</strong> Click it to cycle through <strong>Spectrum</strong> (24 bars with a falling peak marker), <strong>Oscilloscope</strong> (the waveform) and <strong>Off</strong>, and back to Spectrum. The same choice is in <strong>Options</strong>, <strong>Visualizer</strong> and in Preferences. It is remembered.</li>
+    <li><strong>The track line.</strong> At the bottom of the display: the position in the playlist, the artist and title, and the length, for example <code>8. Erik Satie - Gymnopédie No. 1 (3:07)</code>. When nothing is loaded it reads <em>Nastro. Drop music here or press L to open files.</em> When a track fails, the error message takes its place until the next track starts. The line scrolls while music plays, freezes when you pause and returns to the start when you stop.</li>
+</ul>
+
+<h3 id="seek-bar">Seek bar</h3>
+<p>The horizontal bar under the display shows how far into the track you are. Click or drag it to jump. While you drag, only the thumb and the clock move, and the seek happens when you release the button. It does nothing when no track is loaded.</p>
+
+<h3 id="transport">Transport row</h3>
+<p>From left to right:</p>
+<ul>
+    <li><strong>Previous</strong>, <strong>Play</strong>, <strong>Pause</strong>, <strong>Stop</strong> and <strong>Next</strong>. The Play button is highlighted while playing and the Pause button while paused. What each does is in <a href="playback.html#transport">Playback</a>.</li>
+    <li><strong>Open</strong>. The same as <strong>File</strong>, <strong>Open files...</strong>: it adds the files you choose and plays the first.</li>
+    <li><strong>Volume</strong>, the slider with the speaker icon.</li>
+    <li><strong>BAL</strong>, the balance slider. It has a tick in the middle and snaps to the exact centre when you get close to it.</li>
+</ul>
+<p>The volume and balance sliders are explained in <a href="playback.html#volume">Playback</a>.</p>
+
+<h3 id="toggles">The four toggles</h3>
+<p>The bottom row has four buttons with a small light that is on when they are active:</p>
+<div class="table"><table>
+    <thead><tr><th>Button</th><th>What it does</th></tr></thead>
+    <tbody>
+        <tr><td>SHUFFLE</td><td>Plays the playlist in random order.</td></tr>
+        <tr><td>REPEAT</td><td>Starts the playlist again after the last track.</td></tr>
+        <tr><td>EQ</td><td>Shows or hides the equalizer panel. Lit while it is shown.</td></tr>
+        <tr><td>PL</td><td>Shows or hides the playlist panel. Lit while it is shown.</td></tr>
+    </tbody>
+</table></div>
+
+<h2 id="equalizer-panel">The equalizer panel</h2>
+<p>A title bar (<strong>EQUALIZER</strong>, with Collapse and Close buttons), the buttons <strong>ON</strong>, <strong>AUTO</strong>, <strong>PRESETS</strong> and <strong>RESET</strong>, the response curve, the <strong>PRE</strong> slider and the ten band sliders. Everything is explained in <a href="equalizer.html">The equalizer</a>. Its Close button hides the panel, the same as the EQ button, and you can drag its title bar to move it, see <a href="#docking">Docking</a>.</p>
+
+<h2 id="playlist-panel">The playlist panel</h2>
+<p>From top to bottom:</p>
+<ul>
+    <li><strong>Title bar</strong> (<strong>PLAYLIST</strong>), with Collapse and Close buttons. Close hides the panel and keeps the playlists. Drag it to move the panel.</li>
+    <li><strong>Tabs</strong>, one per playlist, then the <strong>+</strong> button to add a playlist, and at the right the <strong>Filter</strong> box.</li>
+    <li><strong>The track list.</strong> One row per track: its number (a play glyph for the loaded track), the artist and title, and the length. Only the rows on screen are drawn, so very long playlists are as light as short ones. An empty playlist says <em>Drop files or folders here, or use ADD.</em></li>
+    <li><strong>The footer.</strong> The buttons <strong>ADD</strong>, <strong>REMOVE</strong>, <strong>SELECT</strong> and <strong>SORT</strong>, each of which opens a menu, and at the right the number of tracks and their total time.</li>
+    <li><strong>The resize grip</strong> in the bottom right corner.</li>
+</ul>
+<p>Everything you can do with them is in <a href="playlists.html">Playlists</a>.</p>
+
+<h2 id="shade-mode">Shade mode</h2>
+<p>Each panel has a Collapse button in its title bar. A collapsed panel is reduced to a thin bar and the panels docked below it move up to close the gap. Click the button again to expand it. The <strong>View</strong> menu has <strong>Collapse player</strong>, <strong>Collapse equalizer</strong> and <strong>Collapse playlist</strong>, and <kbd>Alt</kbd> <kbd>W</kbd> collapses the player.</p>
+<ul>
+    <li>The collapsed <strong>player</strong> keeps the essentials in one bar: a small clock, the track line (it does not scroll in this bar, it is cut with an ellipsis if it is too long), the five transport buttons, and Minimize, Collapse and Close.</li>
+    <li>The collapsed <strong>equalizer</strong> shows only its title, with a small light at the left that is lit when the equalizer is on.</li>
+    <li>The collapsed <strong>playlist</strong> shows only its title.</li>
+</ul>
+
+<h2 id="hiding-panels">Hiding panels</h2>
+<p>The equalizer and the playlist can be hidden entirely: with the <strong>EQ</strong> and <strong>PL</strong> buttons of the player, with the check items <strong>Equalizer</strong> and <strong>Playlist</strong> in the View menu, with <kbd>Alt</kbd> <kbd>G</kbd> and <kbd>Alt</kbd> <kbd>E</kbd>, or with the Close button of the panel. The window shrinks to fit the panels that are left. Hiding a panel does not stop anything: the equalizer keeps working, and the playlist keeps playing. The player cannot be hidden. Which panels are shown, collapsed and where they are is remembered for the next start.</p>
+
+<h2 id="docking">Moving and docking panels</h2>
+<p>All the panels live inside one window, and the player's title bar moves that window, so the whole group moves together. The equalizer and the playlist can also be moved around inside the window by dragging their own title bars. While you drag, a panel snaps magnetically: when one of its edges comes within a few pixels of another panel it jumps to touch it, leaving a small fixed gap, and it also snaps to line up its edges with the edges of the others. Drag it away from the others and it is free again. Docked panels follow when a panel above them is collapsed or the playlist is resized.</p>
+<div class="callout warning">
+    <p class="title">Limits of the panel positions</p>
+    <p>Because the panels are inside the window, a panel cannot be dragged to the left of, or above, the position of the top-left panel of the window: positions never go negative. To arrange panels around the player, move the whole window instead, or pick one of the layouts below.</p>
+</div>
+
+<h3 id="resizing">Resizing the playlist</h3>
+<p>Drag the grip in the bottom right corner of the playlist. The height snaps to a whole number of rows, with a minimum of 4 rows, and the width cannot go below the width of the player and the equalizer. Panels docked below or to the right of the playlist move to keep their place. The size is remembered. The player and the equalizer have a fixed size, which you change with <a href="settings.html#skin-size">Skin size</a>.</p>
+
+<h2 id="layouts">Layouts</h2>
+<p><strong>View</strong>, <strong>Layout</strong> arranges the three panels in one of four ways. Choosing a layout puts every panel in its place, shows all three and expands any collapsed one. You can then move things as you like.</p>
+<div class="table"><table>
+    <thead><tr><th>Layout</th><th>Arrangement</th></tr></thead>
+    <tbody>
+        <tr><td>Column</td><td>The player, the equalizer and the playlist stacked in one column.</td></tr>
+        <tr><td>Equalizer at the right</td><td>The equalizer to the right of the player, and the playlist below both, as wide as the two together.</td></tr>
+        <tr><td>Playlist at the side (default)</td><td>The player above the equalizer on the left, and the playlist to the right of them, as tall as the two together. This is the layout of a fresh install.</td></tr>
+        <tr><td>Strip</td><td>The three panels side by side in a row: player, equalizer and playlist.</td></tr>
+    </tbody>
+</table></div>
+
+<h2 id="window">The window</h2>
+<p>The Nastro window is transparent, so the panels appear to float on your desktop, with a margin around them for their shadow.</p>
+<ul>
+    <li>On Linux with Wayland, a click in the gap between two panels goes through to the window behind. On X11, macOS and Windows, the gaps are still part of Nastro's window and absorb the click.</li>
+    <li>While a menu is open, the window grows downwards to make room for it. The extra space is transparent, and the window goes back to its size when the menu closes.</li>
+</ul>

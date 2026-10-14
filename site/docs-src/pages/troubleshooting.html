@@ -18,19 +18,39 @@ description: What to check when Nastro plays no sound, and how to find and raise
     <p>Play any file with another program or run <code>speaker-test -c 2</code>. If that is silent too, the problem is in your system's audio setup, not in Nastro.</p>
 </div>
 
-<h2>A file does not play</h2>
-<p>Nastro plays FLAC, MP3, Ogg Vorbis, WAV, AIFF and AAC in M4A files. A file that is truncated, protected by DRM or in another format is skipped, and the reason is written to the log.</p>
+<h2 id="file-does-not-play">A file does not play</h2>
+<p>Nastro plays files with the extensions <code>flac</code>, <code>mp3</code>, <code>mp2</code>, <code>mp1</code>, <code>ogg</code>, <code>oga</code>, <code>wav</code>, <code>wave</code>, <code>aif</code>, <code>aiff</code>, <code>aifc</code>, <code>m4a</code>, <code>mp4</code>, <code>m4b</code>, <code>aac</code>, <code>caf</code>, <code>mka</code>, <code>mkv</code> and <code>webm</code>, see <a href="playback.html#formats">Playback</a>. Files with another extension are ignored when you add them. A file that is truncated, protected by DRM or encoded in a format Nastro cannot decode is skipped when its turn comes, the display shows the error, and the reason is written to the log.</p>
+<p><strong>Opus is not decoded yet</strong>, so <code>.opus</code> files, and Ogg files that contain Opus, do not play.</p>
+<p>If you moved or renamed files after adding them to a playlist, those tracks fail the same way, because playlists store the path of each file. Add them again from their new place.</p>
+
+<h2>A track is not in the playlist</h2>
+<p>Dropping or adding a folder skips hidden files and folders (names that start with a dot) and playlist files found inside it. A file with an extension Nastro does not know is not added. Check that the track list is not being narrowed by text in the <strong>Filter</strong> box.</p>
+
+<h2>Keyboard shortcuts do nothing</h2>
+<p>The single-key shortcuts (<kbd>Space</kbd>, <kbd>Z</kbd> to <kbd>B</kbd>, the arrows and so on) do not work while a text field has the focus, for example after you click the playlist Filter box. Click on the player or on a track to give the focus back. See <a href="keyboard-shortcuts.html">Keyboard shortcuts</a>.</p>
+
+<h2 id="windowing">Panels and the window</h2>
+<p>All the panels live inside one transparent window. This has some consequences you may notice:</p>
+<ul>
+    <li><strong>A panel cannot go to the left of, or above, the top-left panel of the window.</strong> Positions never go negative. To place the group elsewhere on your screen, drag the player's title bar, which moves the whole window. To put the equalizer or the playlist on the other side of the player, use <strong>View</strong>, <strong>Layout</strong>.</li>
+    <li><strong>On Linux with Wayland, clicks in the gaps between panels go to the windows behind Nastro.</strong> On X11, macOS and Windows the gaps still belong to Nastro's window, so a click there does not reach what is under it.</li>
+    <li><strong>While a menu is open, the window grows downwards</strong> to make room for it. The extra space is transparent and the window goes back to its size when the menu closes.</li>
+</ul>
+
+<h2>Classic skins</h2>
+<p>Importing classic <code>.wsz</code> skins is planned and not available yet. Nastro uses its own <code>skin.toml</code> skins, see <a href="skins.html">Skins</a>.</p>
 
 <h2 id="logs">The log</h2>
 <p>The log file is in the folder listed under <a href="files-and-folders.html#logs">Files and folders</a>. On Linux:</p>
 ```shell
 $ tail -f ~/.local/state/nastro/nastro.log
 ```
-<p>By default it records informational messages, warnings and errors. To see what Nastro is doing, start it with a more detailed level:</p>
+<p>By default (the level <strong>Information</strong>) it records startup, the tracks played, settings changes, warnings and errors. To see what Nastro is doing, start it with a more detailed level:</p>
 ```shell
 $ NASTRO_LOG=debug nastro
 ```
-<p><code>NASTRO_LOG</code> takes <code>off</code>, <code>error</code>, <code>warn</code>, <code>info</code>, <code>debug</code> or <code>trace</code>. It overrides the level for that run only.</p>
+<p><code>NASTRO_LOG</code> takes <code>off</code>, <code>error</code>, <code>warn</code>, <code>info</code>, <code>debug</code> or <code>trace</code>, in any case. It overrides the level for that run only. A value that is not one of them is ignored.</p>
+<p>You can also change the level while Nastro runs: <strong>Preferences</strong> has a <strong>Log level</strong> setting with the choices <strong>Off</strong>, <strong>Errors</strong>, <strong>Warnings</strong>, <strong>Information</strong>, <strong>Debug</strong> and <strong>Trace</strong>, and it shows the path of the log file. It is saved in <code>settings.toml</code> as <code>log_level</code>, see <a href="settings.html#log-level">Settings</a>. <strong>Trace</strong> is very verbose, use it only to report a bug.</p>
 
 <h2>Reporting a problem</h2>
 <p>Open an issue on <a href="https://github.com/tanisperez/nastro/issues">GitHub</a> with your system, how you installed Nastro and the relevant lines of a <code>NASTRO_LOG=debug</code> log. The log holds file paths, so look it over before posting it.</p>

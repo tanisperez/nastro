@@ -1,5 +1,52 @@
 title: Quick start
-description: The first minutes with Nastro: open files, build a playlist and press play.
+description: Open some music in Nastro, press play, build a playlist, try the equalizer and a skin, and find where to read next.
 ---
 <h1>Quick start</h1>
-<p>This page is being written.</p>
+<p class="lead">Five minutes from a fresh install to music playing. If you have not installed Nastro yet, start with <a href="installation.html">Installation</a>.</p>
+
+<h2 id="open-music">1. Open some music</h2>
+<p>Start Nastro. The three panels open together: the player on the left with the equalizer below it, and the playlist to the right. The display says <em>Nastro. Drop music here or press L to open files.</em> There are several ways to bring in music:</p>
+<ul>
+    <li><strong>Drop it.</strong> Drag files or whole folders from your file manager onto the Nastro window. They are added to the playlist, and folders are searched with all their subfolders.</li>
+    <li><strong>Open files.</strong> Click the Open button of the player, press <kbd>L</kbd> or <kbd>Ctrl</kbd> <kbd>O</kbd>, and choose one or more files. They are added and the first one starts playing.</li>
+    <li><strong>Add a folder.</strong> <strong>File</strong>, <strong>Add folder...</strong> (<kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>O</kbd>), or the <strong>ADD</strong> button of the playlist.</li>
+    <li><strong>The command line.</strong> <code>nastro ~/Music/some-album</code> adds the folder and starts playing it.</li>
+</ul>
+<p>Nastro plays FLAC, MP3, Ogg Vorbis, WAV, AIFF and MPEG-4 audio, among others, see <a href="playback.html#formats">Playback</a>.</p>
+
+<h2 id="play">2. Play</h2>
+<p>If nothing started by itself, double click a track in the playlist, or press the <strong>Play</strong> button. The display now shows the codec, bitrate and sample rate, the time, a spectrum and the name of the track.</p>
+<ul>
+    <li>The buttons under the seek bar are Previous, Play, Pause, Stop and Next. <kbd>Space</kbd> plays and pauses, <kbd>Z</kbd> and <kbd>B</kbd> go to the previous and next track.</li>
+    <li>Click the seek bar to jump within the track, or use <kbd>←</kbd> and <kbd>→</kbd> to move 5 seconds.</li>
+    <li>The volume slider is next to the speaker icon, and <kbd>↑</kbd> and <kbd>↓</kbd> change it too. <strong>BAL</strong> is the balance.</li>
+    <li><strong>SHUFFLE</strong> and <strong>REPEAT</strong> are in the bottom row. Tracks move on by themselves and without a gap between them.</li>
+    <li>Click the clock to show the time remaining, and click the spectrum to switch to the oscilloscope or turn it off.</li>
+</ul>
+
+<h2 id="playlist">3. Shape your playlist</h2>
+<ul>
+    <li>Click a track to select it, <kbd>Ctrl</kbd> click to add to the selection, <kbd>Shift</kbd> click for a range. The <strong>REMOVE</strong> button and <kbd>Delete</kbd> take the selection out of the playlist, never off your disk.</li>
+    <li>The <strong>SORT</strong> button orders the playlist by title, artist, album, file name, path or length.</li>
+    <li>Type in <strong>Filter</strong> to find a track, for example part of an artist and part of a title.</li>
+    <li>The <strong>+</strong> next to the tabs adds a new playlist. Double click a tab to rename it. Playlists are saved on their own and come back next time.</li>
+</ul>
+<p>The full list is in <a href="playlists.html">Playlists</a>.</p>
+
+<h2 id="equalizer">4. Try the equalizer</h2>
+<p>The equalizer panel is on and flat when you start, so it does not change the sound. Open <strong>PRESETS</strong> and pick <strong>Rock</strong> or <strong>Bass boost</strong>, or drag the ten band sliders yourself. <strong>RESET</strong> brings every slider back to 0 dB, and <strong>ON</strong> turns the whole equalizer off so you can compare. With <strong>AUTO</strong> on, Nastro chooses a preset from each track's genre tag. Read more in <a href="equalizer.html">The equalizer</a>.</p>
+
+<h2 id="skin">5. Change the look</h2>
+<p>Open <strong>Options</strong>, <strong>Skin</strong> and pick <strong>Graphite</strong>, <strong>Porcelain</strong> or <strong>Nebula</strong>. If the panels are too small or too large, <strong>Options</strong>, <strong>Skin size</strong> offers 1x, 1.5x and 2x. To make your own skin, see <a href="skins.html">Skins</a>.</p>
+
+<h2 id="arrange">6. Arrange the panels</h2>
+<p>Drag the title bar of the player to move the whole window, and the title bars of the equalizer and the playlist to move those panels, which snap to each other like magnets. Hide the ones you do not need with the <strong>EQ</strong> and <strong>PL</strong> buttons, or collapse a panel to its title bar with its Collapse button. <strong>View</strong>, <strong>Layout</strong> has four ready-made arrangements. See <a href="interface.html">The interface</a>.</p>
+
+<h2 id="next">Where to go next</h2>
+<ul>
+    <li><a href="interface.html">The interface</a>: every part of the window.</li>
+    <li><a href="playback.html">Playback</a>: what each button does, gapless playback, shuffle and repeat.</li>
+    <li><a href="keyboard-shortcuts.html">Keyboard shortcuts</a>: drive Nastro without the mouse.</li>
+    <li><a href="settings.html">Settings</a>: language, menu theme, clock and more.</li>
+    <li><a href="troubleshooting.html">Troubleshooting</a>: if you hear nothing.</li>
+</ul>

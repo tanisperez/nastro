@@ -1,5 +1,79 @@
 title: Settings
-description: Every setting in Nastro.
+description: Every Nastro setting: language, menu theme, skin, skin size, clock, visualizer and log level, where to change each one, its default, and the settings.toml keys and values.
 ---
 <h1>Settings</h1>
-<p>This page is being written.</p>
+<p class="lead">Open <strong>Preferences</strong> with <strong>File</strong>, <strong>Preferences...</strong> (or <strong>Options</strong>, <strong>Preferences...</strong>) or <kbd>Ctrl</kbd> <kbd>P</kbd> (<kbd>⌘</kbd> <kbd>,</kbd> on macOS). Changes apply immediately and are saved as you make them: there is no Save button. The bottom of the window says where the file is.</p>
+
+<p>Preferences is a window of its own, with one row of choices for each setting. Click a choice to select it, the selected one is highlighted. The settings are listed here in the order the window shows them. Things that change while you listen, such as the volume, the equalizer or where the panels are, are not settings, Nastro remembers them in the <a href="files-and-folders.html#session">session file</a>.</p>
+
+<h2 id="summary">At a glance</h2>
+<div class="table"><table>
+    <thead><tr><th>Setting</th><th>Default</th><th>Choices</th><th>Also in</th></tr></thead>
+    <tbody>
+        <tr><td>Language</td><td>Automatic</td><td>Automatic, English, Español, Galego, Italiano</td><td></td></tr>
+        <tr><td>Menus and windows</td><td>System</td><td>System, Light, Dark</td><td></td></tr>
+        <tr><td>Skin</td><td>Silver</td><td>The built-in skins and your own</td><td>Options, Skin</td></tr>
+        <tr><td>Skin size</td><td>1x</td><td>1x, 1.5x, 2x</td><td>Options, Skin size</td></tr>
+        <tr><td>Clock</td><td>Elapsed time</td><td>Elapsed time, Remaining time</td><td>Options, Show remaining time; click on the clock; <kbd>T</kbd></td></tr>
+        <tr><td>Visualizer</td><td>Spectrum</td><td>Spectrum, Oscilloscope, Off</td><td>Options, Visualizer; click on the visualizer</td></tr>
+        <tr><td>Log level</td><td>Information</td><td>Off, Errors, Warnings, Information, Debug, Trace</td><td></td></tr>
+    </tbody>
+</table></div>
+
+<h2 id="language">Language</h2>
+<p><strong>Automatic</strong> follows your system: Nastro uses the first of your system languages that it has, and English if it has none. Written next to it is the language that was detected, for example <em>Automatic (Español)</em>. The other choices are shown in their own language: <strong>English</strong>, <strong>Español</strong>, <strong>Galego</strong> and <strong>Italiano</strong>. The change is immediate, with no restart. Variants such as <code>es-MX</code> or <code>it-CH</code> use their base language. Not everything is translated: log messages, codec names and units (<code>FLAC</code>, <code>kbps</code>, <code>kHz</code>) and keyboard shortcut names stay as they are.</p>
+
+<h2 id="menus-and-windows">Menus and windows</h2>
+<p>Whether the menus, Preferences and About are light or dark: <strong>System</strong> follows the light or dark setting of your computer, <strong>Light</strong> and <strong>Dark</strong> force one. As the hint in the window says, <em>the skin keeps its own colors</em>: this does not change the player, the equalizer or the playlist.</p>
+
+<h2 id="skin">Skin</h2>
+<p>The list shows every skin: Silver, Graphite, Porcelain and Nebula, followed by the ones you installed. A hint under it gives the folder for your own skins. After you copy a new skin there, use <strong>Options</strong>, <strong>Skin</strong>, <strong>Reload skins</strong> to read the folder again, and <strong>Open skins folder</strong> to open it. If the skin you chose is gone the next time Nastro starts, it falls back to Silver. See <a href="skins.html">Skins</a>.</p>
+
+<h2 id="skin-size">Skin size</h2>
+<p><strong>1x</strong>, <strong>1.5x</strong> or <strong>2x</strong>: how big the panels are drawn, whatever the scale of your screen. Use a bigger size on a high resolution screen or if you find the controls too small. The menus and Preferences are not affected. Panel positions and the playlist size scale with it.</p>
+
+<h2 id="clock">Clock</h2>
+<p><strong>Elapsed time</strong> shows how long the track has been playing. <strong>Remaining time</strong> shows how long is left, with a minus sign. You can also switch by clicking the clock in the player.</p>
+
+<h2 id="visualizer">Visualizer</h2>
+<p><strong>Spectrum</strong>, <strong>Oscilloscope</strong> or <strong>Off</strong>. You can also click the visualizer in the player to go through them.</p>
+
+<h2 id="log-level">Log level</h2>
+<p>How much Nastro writes to its log file. The hint under the choices gives the path of the file.</p>
+<div class="table"><table>
+    <thead><tr><th>Choice</th><th>What is logged</th></tr></thead>
+    <tbody>
+        <tr><td>Off</td><td>Nothing.</td></tr>
+        <tr><td>Errors</td><td>Only errors.</td></tr>
+        <tr><td>Warnings</td><td>Errors and warnings.</td></tr>
+        <tr><td>Information (default)</td><td>Startup, the tracks played and settings changes, plus warnings and errors.</td></tr>
+        <tr><td>Debug</td><td>Also the state changes that help to diagnose a problem.</td></tr>
+        <tr><td>Trace</td><td>Everything, including every screen redraw. Very verbose, only for bug reports.</td></tr>
+    </tbody>
+</table></div>
+<p>The change applies at once. The <code>NASTRO_LOG</code> environment variable overrides this choice for one run, see <a href="troubleshooting.html#logs">Troubleshooting</a>.</p>
+
+<h2 id="settings-toml">The settings.toml file</h2>
+<p>The settings are stored in <code>settings.toml</code>, in the configuration folder listed under <a href="files-and-folders.html#configuration">Files and folders</a>. It is a plain text file. Nastro reads it only when it starts and rewrites it, with every key, each time you change a setting, so edit it while Nastro is closed.</p>
+```toml title="settings.toml"
+language = "auto"
+theme = "system"
+skin = "silver"
+skin_scale = 1.0
+time_display = "elapsed"
+visualizer = "spectrum"
+log_level = "info"
+```
+<div class="table"><table>
+    <thead><tr><th>Key</th><th>Values</th><th>Default</th></tr></thead>
+    <tbody>
+        <tr><td><code>language</code></td><td><code>"auto"</code>, <code>"en"</code>, <code>"es"</code>, <code>"gl"</code>, <code>"it"</code></td><td><code>"auto"</code></td></tr>
+        <tr><td><code>theme</code></td><td><code>"system"</code>, <code>"light"</code>, <code>"dark"</code></td><td><code>"system"</code></td></tr>
+        <tr><td><code>skin</code></td><td>A skin id: <code>"silver"</code>, <code>"graphite"</code>, <code>"porcelain"</code>, <code>"nebula"</code>, or the id of one of your skins (its file or folder name). An unknown id falls back to Silver.</td><td><code>"silver"</code></td></tr>
+        <tr><td><code>skin_scale</code></td><td><code>1.0</code>, <code>1.5</code> or <code>2.0</code> (a number, not text; <code>1</code> and <code>2</code> also work)</td><td><code>1.0</code></td></tr>
+        <tr><td><code>time_display</code></td><td><code>"elapsed"</code>, <code>"remaining"</code></td><td><code>"elapsed"</code></td></tr>
+        <tr><td><code>visualizer</code></td><td><code>"spectrum"</code>, <code>"oscilloscope"</code>, <code>"off"</code></td><td><code>"spectrum"</code></td></tr>
+        <tr><td><code>log_level</code></td><td><code>"off"</code>, <code>"error"</code>, <code>"warn"</code> (or <code>"warning"</code>), <code>"info"</code>, <code>"debug"</code>, <code>"trace"</code></td><td><code>"info"</code></td></tr>
+    </tbody>
+</table></div>
+<p>Text values are not case sensitive, except skin ids. Every key is read on its own: a missing key, a wrong type or a value that does not exist falls back to the default of that key only, and keys Nastro does not know are ignored. A file that is not valid TOML at all gives all the defaults. To go back to the defaults, delete the file while Nastro is closed.</p>

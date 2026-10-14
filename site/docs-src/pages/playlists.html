@@ -1,5 +1,89 @@
 title: Playlists
-description: Building, saving and opening playlists in Nastro.
+description: Tabs, adding files and folders, removing, selecting, sorting, filtering, moving tracks, exporting M3U and where Nastro stores your playlists.
 ---
 <h1>Playlists</h1>
-<p>This page is being written.</p>
+<p class="lead">Nastro keeps any number of playlists, one per tab. They are saved as you work and come back the next time you start the player.</p>
+
+<h2 id="tabs">Tabs</h2>
+<p>The tabs are at the top of the playlist panel. Click a tab to show that playlist. The first time you run Nastro there is one empty playlist, named <strong>Playlist 1</strong>.</p>
+<ul>
+    <li><strong>New playlist:</strong> the <strong>+</strong> button next to the tabs, or <strong>File</strong>, <strong>New playlist</strong> (<kbd>Ctrl</kbd> <kbd>N</kbd>). It is added after the others, shown, and named <strong>Playlist</strong> followed by a number.</li>
+    <li><strong>Rename:</strong> double click the tab, or <strong>File</strong>, <strong>Rename playlist</strong>, which also shows the playlist panel if it was hidden. Type the new name and press <kbd>Enter</kbd>. Clicking away cancels, and an empty name is ignored.</li>
+    <li><strong>Close:</strong> <strong>File</strong>, <strong>Close playlist</strong> closes the playlist shown and <strong>deletes its file</strong>, without asking. The last remaining playlist is not closed, it is emptied.</li>
+</ul>
+<p>Each tab has its own selection and its own filter. The playlist that holds the loaded track is the one Next, Previous and the end of a track follow, even when you are looking at another tab.</p>
+
+<h2 id="adding">Adding tracks</h2>
+<p>Three ways, all of which add to the end of the playlist shown:</p>
+<ul>
+    <li><strong>The menus.</strong> <strong>File</strong>, <strong>Open files...</strong> (<kbd>Ctrl</kbd> <kbd>O</kbd> or <kbd>L</kbd>, and the open button of the player) adds the files you choose and starts playing the first one added. <strong>File</strong>, <strong>Add files...</strong> and <strong>Add folder...</strong> (<kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>O</kbd>) add without playing. The <strong>ADD</strong> button of the playlist offers the same two. You can choose several files or folders in one go.</li>
+    <li><strong>Drag and drop.</strong> Drop files, folders or playlist files on the Nastro window. They are added without playing.</li>
+    <li><strong>The command line.</strong> See <a href="playback.html#command-line">Playback</a>.</li>
+</ul>
+<p>What is added:</p>
+<ul>
+    <li>A <strong>file</strong> in a <a href="playback.html#formats">supported format</a> becomes one track. Single files keep the order in which they were given. Files of any other kind are skipped silently.</li>
+    <li>A <strong>folder</strong> adds every supported file inside it, including all its subfolders (up to 16 levels deep), sorted by path. Hidden files and folders, those whose name starts with a dot, are skipped, and so are playlist files found inside the folder.</li>
+    <li>A <strong>playlist file</strong> (<code>.m3u</code> or <code>.m3u8</code>) that you choose or drop directly adds its entries in order. Relative paths in it are read from the folder of the playlist file.</li>
+</ul>
+<p>The tracks appear at once and Nastro fills in titles, artists and lengths in the background, so adding a large folder never freezes the window. A track shows <em>Artist - Title</em>, or the title alone, or the file name without extension when it has no title tag, and its length on the right. The track that is loaded is marked with a play glyph in place of its number. The footer shows the number of tracks and their total length, for example <code>12 tracks · 0:48:05</code>.</p>
+
+<h2 id="selecting">Selecting</h2>
+<div class="table"><table>
+    <thead><tr><th>Action</th><th>Result</th></tr></thead>
+    <tbody>
+        <tr><td>Click a track</td><td>Selects only that track.</td></tr>
+        <tr><td><kbd>Ctrl</kbd> click (<kbd>⌘</kbd> click on macOS)</td><td>Adds the track to the selection, or removes it if it was selected.</td></tr>
+        <tr><td><kbd>Shift</kbd> click</td><td>Selects the range from the last track you clicked to this one.</td></tr>
+        <tr><td>Double click</td><td>Plays the track.</td></tr>
+        <tr><td>Right click</td><td>Opens a menu for the selected tracks: <strong>Play</strong>, <strong>Remove selected</strong>, <strong>Keep only selected</strong>, <strong>Select all</strong> and <strong>Invert selection</strong>. A track that is not selected yet becomes the selection first, a track that is already selected keeps the whole selection.</td></tr>
+        <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>Select the previous or next shown track. They work once the track list has the focus, after you click a track.</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>Plays the first selected track.</td></tr>
+    </tbody>
+</table></div>
+<p>The <strong>SELECT</strong> button has three commands: <strong>Select all</strong> (<kbd>Ctrl</kbd> <kbd>A</kbd>), <strong>Select none</strong> and <strong>Invert selection</strong>. These work on the whole playlist, including tracks the filter is hiding.</p>
+
+<h2 id="removing">Removing tracks</h2>
+<p>The <strong>REMOVE</strong> button has three commands:</p>
+<ul>
+    <li><strong>Remove selected</strong> (<kbd>Delete</kbd>): removes the selected tracks.</li>
+    <li><strong>Keep only selected:</strong> removes every track that is not selected.</li>
+    <li><strong>Remove all:</strong> empties the playlist.</li>
+</ul>
+<p>Removing tracks from a playlist never touches the files on disk.</p>
+
+<h2 id="sorting">Sorting</h2>
+<p>The <strong>SORT</strong> button reorders the whole playlist:</p>
+<div class="table"><table>
+    <thead><tr><th>Command</th><th>Order</th></tr></thead>
+    <tbody>
+        <tr><td>By title</td><td>A to Z by title tag.</td></tr>
+        <tr><td>By artist</td><td>A to Z by artist tag.</td></tr>
+        <tr><td>By album</td><td>A to Z by album tag.</td></tr>
+        <tr><td>By file name</td><td>A to Z by file name.</td></tr>
+        <tr><td>By path</td><td>A to Z by the full path.</td></tr>
+        <tr><td>By length</td><td>Shortest first.</td></tr>
+        <tr><td>Reverse</td><td>The current order, backwards.</td></tr>
+        <tr><td>Randomize</td><td>A new random order every time. This changes the playlist itself, it is not the same as <a href="playback.html#shuffle-repeat">shuffle</a>.</td></tr>
+    </tbody>
+</table></div>
+<p>Text is compared ignoring case and accents. Tracks that lack the value (no artist tag, say) go to the end. Sorting keeps the selection and the loaded track on the same tracks.</p>
+
+<h2 id="moving">Moving tracks</h2>
+<p>Select one or more tracks, click the track list so it has the focus, and press <kbd>Alt</kbd> <kbd>↑</kbd> or <kbd>Alt</kbd> <kbd>↓</kbd> (<kbd>Option</kbd> on macOS) to move them one position up or down. Several selected tracks move together and keep the distance between them, and they stop at the top or the bottom of the playlist.</p>
+
+<h2 id="filter">Filter</h2>
+<p>The <strong>Filter</strong> box at the right of the tabs narrows the list as you type. <kbd>Ctrl</kbd> <kbd>F</kbd> (<kbd>⌘</kbd> <kbd>F</kbd>) puts the cursor in it.</p>
+<ul>
+    <li>It looks at the track line (artist and title) and at the file name.</li>
+    <li>It ignores case and accents: <code>dvorak</code> finds <em>Dvořák</em>.</li>
+    <li>Words are separated by spaces and <strong>every word must match</strong>, anywhere and in any order: <code>satie gym</code> finds <em>Erik Satie - Gymnopédie No. 1</em>.</li>
+</ul>
+<p>When nothing matches, the list says <em>No tracks match this filter.</em> Each playlist keeps its own filter text. The filter only hides tracks: it does not remove anything and it does not change the play order. While you type in the box, the single-key shortcuts are off, see <a href="keyboard-shortcuts.html">Keyboard shortcuts</a>.</p>
+
+<h2 id="export">Exporting a playlist</h2>
+<p><strong>File</strong>, <strong>Export playlist...</strong> saves a copy of the playlist shown as an extended M3U file in UTF-8, so other players can open it. The save dialog starts in your Music folder (or your home folder) with the playlist name and the extension <code>.m3u8</code> as the suggested file name. The tracks are written with their full paths, so the exported file works from any folder on the same computer. Exporting does not change the playlist.</p>
+
+<h2 id="storage">Where playlists are stored</h2>
+<p>Every playlist is saved automatically, a couple of seconds after the last change and again when you quit, as a plain file in the playlists folder, named <code>playlist-1.m3u8</code>, <code>playlist-2.m3u8</code> and so on. The name you gave it is stored inside the file. The order of the tabs, the tab you were on and the loaded track are remembered in the session file. The folder is listed in <a href="files-and-folders.html">Files and folders</a>.</p>
+<p>Playlists store the path of each file. If you move or rename a music file, its track stays in the playlist and is skipped when played, see <a href="playback.html#errors">Errors and skipped tracks</a>. Closing a tab deletes its file.</p>

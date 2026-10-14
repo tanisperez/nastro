@@ -1,5 +1,81 @@
 title: Playback
-description: Playing, pausing, seeking, volume, shuffle and repeat in Nastro.
+description: What Nastro plays, how the transport buttons behave, gapless playback, shuffle and repeat, seeking, the volume curve, balance, and what happens at the end of a playlist or when a file fails.
 ---
 <h1>Playback</h1>
-<p>This page is being written.</p>
+<p class="lead">This page explains what Nastro plays and exactly what the transport does in each situation: when a track ends, when you press Next, when a file cannot be read.</p>
+
+<h2 id="formats">Supported formats</h2>
+<p>Nastro decodes these file extensions, in upper or lower case:</p>
+<div class="table"><table>
+    <thead><tr><th>Format</th><th>Extensions</th></tr></thead>
+    <tbody>
+        <tr><td>FLAC</td><td><code>flac</code></td></tr>
+        <tr><td>MP3 and MPEG audio</td><td><code>mp3</code>, <code>mp2</code>, <code>mp1</code></td></tr>
+        <tr><td>Ogg</td><td><code>ogg</code>, <code>oga</code></td></tr>
+        <tr><td>WAV</td><td><code>wav</code>, <code>wave</code></td></tr>
+        <tr><td>AIFF</td><td><code>aif</code>, <code>aiff</code>, <code>aifc</code></td></tr>
+        <tr><td>MPEG-4 audio</td><td><code>m4a</code>, <code>mp4</code>, <code>m4b</code>, <code>aac</code></td></tr>
+        <tr><td>Core Audio</td><td><code>caf</code></td></tr>
+        <tr><td>Matroska and WebM</td><td><code>mka</code>, <code>mkv</code>, <code>webm</code></td></tr>
+    </tbody>
+</table></div>
+<p>Files with any other extension are ignored when you add them. Nastro decides by the extension, so a supported extension on a file whose contents it cannot decode is added to the playlist and then skipped when its turn comes, see <a href="#errors">Errors and skipped tracks</a>.</p>
+<div class="callout warning">
+    <p class="title">Opus is not supported yet</p>
+    <p>Opus audio is not decoded yet, so <code>.opus</code> files and Ogg files that contain Opus do not play.</p>
+</div>
+<p>Nastro reads the title, artist, album and genre tags, and the length, of every file you add. A track without a title tag shows its file name without the extension. While a track plays, the display shows the codec, the bitrate when known, the sample rate and the channels, see <a href="interface.html#display">The display</a>.</p>
+<p>If the sample rate of a file differs from the one of your audio output, Nastro resamples it. More than two channels are mixed down to stereo, and a mono file plays on both speakers.</p>
+
+<h2 id="transport">The transport</h2>
+<p>The buttons of the player, the <strong>Play</strong> menu and the <a href="keyboard-shortcuts.html">keyboard shortcuts</a> run the same commands.</p>
+<div class="table"><table>
+    <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+    <tbody>
+        <tr><td>Play</td><td>
+            Paused: resumes. Playing: restarts the track from the beginning. Stopped with a track loaded: plays it from the beginning. Nothing loaded: plays the track that was loaded when you last quit, otherwise the first selected track of the playlist shown, otherwise its first track.
+        </td></tr>
+        <tr><td>Pause</td><td>Playing: pauses. Paused: resumes. Stopped: does nothing.</td></tr>
+        <tr><td>Play or pause (<kbd>Space</kbd>)</td><td>Pauses when playing, otherwise does what Play does.</td></tr>
+        <tr><td>Stop</td><td>Stops and puts the position back at the start. The track stays loaded, so Play starts it again.</td></tr>
+        <tr><td>Next</td><td>Plays the next track in the play order. After the last track it wraps to the first, even with repeat off.</td></tr>
+        <tr><td>Previous</td><td>Plays the previous track in the play order. Before the first track it wraps to the last. It always changes track, it does not restart the current one.</td></tr>
+    </tbody>
+</table></div>
+<p>With nothing loaded, Next and Previous both play the first track of the play order of the playlist shown. Next and Previous act on the playlist of the track that is loaded, which can be a different tab from the one you are looking at. A double click on a track in the playlist, or <kbd>Enter</kbd> on the selected one, plays it right away.</p>
+
+<h2 id="gapless">Gapless playback</h2>
+<p>While a track plays, Nastro hands the audio engine the track that comes next, so it starts the moment the previous one ends, with no silence in between. The queued track follows the play order, so it respects shuffle and repeat, and it is replaced whenever you change the playlist, shuffle or repeat. Albums recorded to flow from one song into the next play as intended.</p>
+
+<h2 id="shuffle-repeat">Shuffle and repeat</h2>
+<p>Turn them on and off with the <strong>SHUFFLE</strong> and <strong>REPEAT</strong> buttons of the player, the <strong>Play</strong> menu or <kbd>S</kbd> and <kbd>R</kbd>. Both are remembered between sessions.</p>
+<ul>
+    <li><strong>Neither:</strong> tracks play in playlist order and playback stops after the last one.</li>
+    <li><strong>Repeat:</strong> after the last track, the first one plays again. Repeat repeats the whole playlist, not a single track.</li>
+    <li><strong>Shuffle:</strong> Nastro plays a random order of the playlist in which every track plays once before any repeats. The track already playing goes first, so turning shuffle on does not interrupt it. Previous walks back along the shuffled order. Changing the playlist (adding, removing, sorting) makes a new shuffled order.</li>
+    <li><strong>Shuffle and repeat together:</strong> when the shuffled order runs out, a new shuffled order starts, and it never begins with the track that just played.</li>
+</ul>
+<p>The filter of the playlist only changes which tracks are shown. It does not change the play order.</p>
+
+<h2 id="end">At the end of the playlist</h2>
+<p>With repeat off, when the last track ends (in shuffle: when the last track of the shuffled order ends) playback stops. The state glyph of the display changes to stop and the last track stays loaded. With repeat on, playback continues from the beginning.</p>
+
+<h2 id="seeking">Seeking</h2>
+<p>Click or drag the seek bar under the display. While you drag, only the thumb and the clock move, and Nastro jumps to that point when you release the button. The seek bar does nothing while no track is loaded or when the length of the file is not known.</p>
+<p><kbd>←</kbd> and <kbd>→</kbd> (and <strong>Back 5 seconds</strong> and <strong>Forward 5 seconds</strong> in the Play menu) jump 5 seconds. Forward never goes past the end of the track.</p>
+
+<h2 id="volume">Volume and balance</h2>
+<p>The volume slider moves in steps of 1 %, and the volume keys <kbd>↑</kbd> and <kbd>↓</kbd> change it by 5 %. The default is 80 %. The slider does not control the volume linearly: the sound level follows the cube of the slider position, so equal movements of the slider sound like equal changes in loudness. At the middle of the slider the sound is 18 dB quieter than at the top, a tenth of the way up it is 60 dB quieter, and at the far left there is silence.</p>
+<p>The <strong>BAL</strong> slider moves the sound between the left and the right speaker by turning the other side down, never by turning the near side up. Near the middle it snaps to the exact centre, where both sides are at full level, so you can find it without looking. Changes of volume and balance are smoothed over a few milliseconds, so they never click.</p>
+<p>Volume and balance are remembered between sessions. See also <a href="equalizer.html">The equalizer</a>, which is applied before the volume.</p>
+
+<h2 id="errors">Errors and skipped tracks</h2>
+<p>When a track cannot be played, for example because the file was moved, is damaged or is in a format Nastro does not decode, or when there is no audio output, the display shows the error in place of the track line until the next track starts. If the failure belongs to a file, Nastro skips to the next track in the play order. If every track of the playlist fails one after another, Nastro stops trying instead of looping forever. The reason is written to the <a href="troubleshooting.html#logs">log</a>.</p>
+
+<h2 id="command-line">Files given on the command line</h2>
+<p>Files, folders and playlists passed as arguments are added to the playlist shown and the first one added starts playing:</p>
+```shell
+$ nastro ~/Music/album/*.flac
+$ nastro ~/Music/Jazz
+```
+<p>On macOS, files you open with Nastro from Finder, or drop on its Dock icon, are handled the same way while it is running. Folders and playlists are read as described in <a href="playlists.html#adding">Adding tracks</a>. Without arguments, Nastro starts with the playlists of your last session and does not play anything until you press Play.</p>

@@ -7,8 +7,8 @@ description: Every file Nastro reads and writes on your system: settings, sessio
 <h2>Your music</h2>
 <p>Nastro only reads your audio files. It does not move, rename, tag or copy them.</p>
 
-<h2>Configuration</h2>
-<p>Settings, the saved session state and your skins.</p>
+<h2 id="configuration">Configuration</h2>
+<p>Your settings and your skins.</p>
 <div class="table"><table>
     <thead><tr><th>System</th><th>Folder</th></tr></thead>
     <tbody>
@@ -20,11 +20,22 @@ description: Every file Nastro reads and writes on your system: settings, sessio
 <div class="table"><table>
     <thead><tr><th>Path</th><th>Contents</th></tr></thead>
     <tbody>
-        <tr><td><code>settings.toml</code></td><td>Your settings. A plain TOML file you can read and edit while Nastro is closed.</td></tr>
-        <tr><td>Session state</td><td>What Nastro restores at the next start, such as where the panels were. It is kept in this folder too.</td></tr>
+        <tr><td><code>settings.toml</code></td><td>Your settings, see <a href="settings.html#settings-toml">Settings</a>. A plain TOML file you can read and edit while Nastro is closed.</td></tr>
         <tr><td><code>skins/</code></td><td>Your own skins, see <a href="skins.html#install">Install a skin</a>.</td></tr>
     </tbody>
 </table></div>
+
+<h2 id="session">Session state</h2>
+<p>What Nastro restores at the next start: the volume and balance, shuffle and repeat, the equalizer, where the panels are and which are shown or collapsed, the list of playlists, the tab you were on and the loaded track. It is one file, <code>session.toml</code>, saved a moment after every change and again when you quit.</p>
+<div class="table"><table>
+    <thead><tr><th>System</th><th>File</th></tr></thead>
+    <tbody>
+        <tr><td>Linux</td><td><code>~/.local/state/nastro/session.toml</code> (<code>$XDG_STATE_HOME/nastro/session.toml</code>)</td></tr>
+        <tr><td>macOS</td><td><code>~/Library/Application Support/nastro/session.toml</code></td></tr>
+        <tr><td>Windows</td><td><code>%LOCALAPPDATA%\nastro\session.toml</code></td></tr>
+    </tbody>
+</table></div>
+<p>Like the settings, each value is read on its own, so a damaged or older file never loses everything. Delete it while Nastro is closed to start from the default layout, volume and equalizer. Your playlists are not in it, only their file names, so deleting it leaves the playlist files in place, but Nastro forgets which ones were open.</p>
 
 <h2>Data</h2>
 <p>Your playlists.</p>
@@ -36,10 +47,10 @@ description: Every file Nastro reads and writes on your system: settings, sessio
         <tr><td>Windows</td><td><code>%APPDATA%\nastro\playlists\</code></td></tr>
     </tbody>
 </table></div>
-<p>Playlists are plain M3U text files, so other players and scripts can read them.</p>
+<p>Each playlist is one plain extended M3U file in UTF-8, named <code>playlist-1.m3u8</code>, <code>playlist-2.m3u8</code> and so on, with the playlist name on a <code>#PLAYLIST:</code> line and the full path of each track. Other players and scripts can read them. Closing a playlist in Nastro deletes its file. See <a href="playlists.html#storage">Playlists</a>.</p>
 
 <h2 id="logs">Logs</h2>
-<p>Nastro writes a log file, rotated at 5 MB, keeping the last 10 files.</p>
+<p>Nastro writes a log file, <code>nastro.log</code>. When it reaches 5 MB it is renamed <code>nastro.1.log</code> (the older ones move up to <code>nastro.9.log</code>), so at most 10 files are kept.</p>
 <div class="table"><table>
     <thead><tr><th>System</th><th>Folder</th></tr></thead>
     <tbody>

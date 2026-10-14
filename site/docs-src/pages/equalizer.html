@@ -1,5 +1,90 @@
 title: The equalizer
-description: The 10-band equalizer and its presets.
+description: The 10-band equalizer of Nastro: ON, AUTO, the 16 presets, RESET, the preamp, the bands and their frequencies, the gain range and the response curve.
 ---
 <h1>The equalizer</h1>
-<p>This page is being written.</p>
+<p class="lead">The equalizer is the middle panel of the window. It shapes the sound of everything Nastro plays with ten bands from deep bass to high treble, plus a preamp. Show or hide it with the <strong>EQ</strong> button of the player, <strong>View</strong>, <strong>Equalizer</strong> or <kbd>Alt</kbd> <kbd>G</kbd>.</p>
+
+<h2 id="controls">Controls</h2>
+<p>The column of buttons at the left of the panel:</p>
+<div class="table"><table>
+    <thead><tr><th>Button</th><th>What it does</th></tr></thead>
+    <tbody>
+        <tr><td>ON</td><td>Turns the equalizer on or off. Off, the sound passes through untouched. Your settings are kept, so turning it on again brings the same curve back. It is on by default.</td></tr>
+        <tr><td>AUTO</td><td>Picks a preset for each track from its genre tag, see <a href="#auto">Automatic presets</a>. Off by default.</td></tr>
+        <tr><td>PRESETS</td><td>Opens the list of <a href="#presets">presets</a>. The one applied last is checked.</td></tr>
+        <tr><td>RESET</td><td>Sets the preamp and every band to 0 dB. The equalizer stays on or off as it was, and <strong>Flat</strong> is checked in the presets list.</td></tr>
+    </tbody>
+</table></div>
+<p>Everything is remembered between sessions: whether it is on, whether AUTO is on, the preamp and the ten bands.</p>
+
+<h2 id="bands">Preamp and bands</h2>
+<p>To the right of the buttons there are the response curve, the <strong>PRE</strong> slider and ten band sliders. Every slider goes from -12 dB at the bottom to +12 dB at the top, in steps of 1 dB, with 0 dB in the middle (the scale between the preamp and the first band shows <code>+12</code>, <code>0</code> and <code>-12</code>). Click or drag a slider to set it.</p>
+<div class="table"><table>
+    <thead><tr><th>Slider</th><th>Label</th><th>Centre frequency</th></tr></thead>
+    <tbody>
+        <tr><td>Preamp</td><td>PRE</td><td>Gain applied to everything before the bands</td></tr>
+        <tr><td>Band 1</td><td>31</td><td>31 Hz</td></tr>
+        <tr><td>Band 2</td><td>62</td><td>62 Hz</td></tr>
+        <tr><td>Band 3</td><td>125</td><td>125 Hz</td></tr>
+        <tr><td>Band 4</td><td>250</td><td>250 Hz</td></tr>
+        <tr><td>Band 5</td><td>500</td><td>500 Hz</td></tr>
+        <tr><td>Band 6</td><td>1k</td><td>1,000 Hz</td></tr>
+        <tr><td>Band 7</td><td>2k</td><td>2,000 Hz</td></tr>
+        <tr><td>Band 8</td><td>4k</td><td>4,000 Hz</td></tr>
+        <tr><td>Band 9</td><td>8k</td><td>8,000 Hz</td></tr>
+        <tr><td>Band 10</td><td>16k</td><td>16,000 Hz</td></tr>
+    </tbody>
+</table></div>
+<p>Each band is a bell-shaped boost or cut around its frequency. Changes are smooth, so moving a slider while music plays does not click. A band whose frequency is at or above 0.45 times the sample rate of the file being played is skipped for that file. When the equalizer is off, or every slider is at 0 dB, the audio is not processed at all.</p>
+<p>The preamp is the way to avoid distortion: when you boost bands, the total level goes up, and lowering the preamp by about the same amount keeps the sound from clipping. Every preset already does this.</p>
+<p>The moment you move a slider by hand, no preset is checked any more, because the curve is no longer exactly that preset.</p>
+
+<h2 id="curve">The response curve</h2>
+<p>The small display above the sliders draws the curve you have set: one point per band, from the 31 Hz band at the left edge to the 16 kHz band at the right edge, joined by straight lines. The dashed line in the middle is 0 dB. The height of each point is the gain of the band plus the preamp, limited to the -12 to +12 dB range of the display. The curve is drawn in the display colour while the equalizer is on and dimmed when it is off. It shows the settings, not a measurement of the music.</p>
+
+<h2 id="presets">Presets</h2>
+<p>Choosing a preset sets the preamp and all ten bands, and keeps the equalizer on or off as it was. You can then adjust any slider. Gains are in dB.</p>
+<div class="table"><table>
+    <thead><tr><th>Preset</th><th>Id</th><th>PRE</th><th>31</th><th>62</th><th>125</th><th>250</th><th>500</th><th>1k</th><th>2k</th><th>4k</th><th>8k</th><th>16k</th></tr></thead>
+    <tbody>
+        <tr><td>Flat</td><td><code>flat</code></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>Rock</td><td><code>rock</code></td><td>-4</td><td>4</td><td>3</td><td>2</td><td>-1</td><td>-2</td><td>-1</td><td>2</td><td>3</td><td>4</td><td>4</td></tr>
+        <tr><td>Pop</td><td><code>pop</code></td><td>-3</td><td>-1</td><td>1</td><td>3</td><td>4</td><td>3</td><td>0</td><td>-1</td><td>-1</td><td>1</td><td>2</td></tr>
+        <tr><td>Jazz</td><td><code>jazz</code></td><td>-3</td><td>3</td><td>2</td><td>1</td><td>2</td><td>-2</td><td>-2</td><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+        <tr><td>Classical</td><td><code>classical</code></td><td>-2</td><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-1</td><td>-2</td><td>-2</td><td>-3</td></tr>
+        <tr><td>Dance</td><td><code>dance</code></td><td>-5</td><td>6</td><td>5</td><td>3</td><td>1</td><td>0</td><td>-1</td><td>-1</td><td>3</td><td>4</td><td>3</td></tr>
+        <tr><td>Electronic</td><td><code>electronic</code></td><td>-4</td><td>5</td><td>4</td><td>1</td><td>0</td><td>-2</td><td>2</td><td>1</td><td>2</td><td>4</td><td>5</td></tr>
+        <tr><td>Hip hop</td><td><code>hip_hop</code></td><td>-5</td><td>6</td><td>5</td><td>3</td><td>3</td><td>-1</td><td>-1</td><td>1</td><td>0</td><td>2</td><td>3</td></tr>
+        <tr><td>Acoustic</td><td><code>acoustic</code></td><td>-3</td><td>3</td><td>3</td><td>2</td><td>1</td><td>2</td><td>1</td><td>2</td><td>3</td><td>3</td><td>2</td></tr>
+        <tr><td>Vocal</td><td><code>vocal</code></td><td>-3</td><td>-3</td><td>-2</td><td>-1</td><td>1</td><td>3</td><td>4</td><td>3</td><td>2</td><td>0</td><td>-2</td></tr>
+        <tr><td>Bass boost</td><td><code>bass_boost</code></td><td>-5</td><td>7</td><td>6</td><td>5</td><td>3</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>Treble boost</td><td><code>treble_boost</code></td><td>-5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>3</td><td>5</td><td>6</td><td>7</td></tr>
+        <tr><td>Loudness</td><td><code>loudness</code></td><td>-4</td><td>6</td><td>4</td><td>0</td><td>-1</td><td>-2</td><td>-2</td><td>0</td><td>2</td><td>4</td><td>5</td></tr>
+        <tr><td>Soft</td><td><code>soft</code></td><td>-1</td><td>1</td><td>2</td><td>1</td><td>0</td><td>-1</td><td>-1</td><td>0</td><td>-2</td><td>-3</td><td>-4</td></tr>
+        <tr><td>Headphones</td><td><code>headphones</code></td><td>-3</td><td>3</td><td>5</td><td>3</td><td>-1</td><td>-2</td><td>0</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+        <tr><td>Small speakers</td><td><code>small_speakers</code></td><td>-4</td><td>6</td><td>5</td><td>4</td><td>3</td><td>1</td><td>0</td><td>-1</td><td>-1</td><td>0</td><td>0</td></tr>
+    </tbody>
+</table></div>
+<p>The names are translated in the Spanish, Galician and Italian interfaces. The id is the stable name of the preset, it is what the <a href="files-and-folders.html">session file</a> stores.</p>
+
+<h2 id="auto">Automatic presets</h2>
+<p>With <strong>AUTO</strong> on, each time a track starts Nastro reads its genre tag and applies the matching preset. The match is a keyword found anywhere in the genre text, ignoring case, and the first group that matches wins, checked in this order:</p>
+<div class="table"><table>
+    <thead><tr><th>Preset</th><th>Genre contains</th></tr></thead>
+    <tbody>
+        <tr><td>Rock</td><td>rock, metal, punk</td></tr>
+        <tr><td>Pop</td><td>pop</td></tr>
+        <tr><td>Jazz</td><td>jazz, blues, swing</td></tr>
+        <tr><td>Classical</td><td>classical, baroque, opera, orchestral</td></tr>
+        <tr><td>Dance</td><td>dance, disco, house</td></tr>
+        <tr><td>Electronic</td><td>electronic, techno, trance, edm, ambient</td></tr>
+        <tr><td>Hip hop</td><td>hip hop, hip-hop, rap, r&amp;b</td></tr>
+        <tr><td>Acoustic</td><td>folk, acoustic, country</td></tr>
+        <tr><td>Vocal</td><td>spoken, podcast, audiobook</td></tr>
+    </tbody>
+</table></div>
+<p>A genre that matches none of these gets <strong>Flat</strong>. A track with no genre tag leaves the equalizer as it is. For example, <em>Synth-Pop</em> gets Pop and <em>Progressive Rock</em> gets Rock, while <em>Reggae</em> gets Flat.</p>
+<p>AUTO replaces your curve with the preset every time a track starts. Turn it off to keep a curve you made yourself. The only presets AUTO ever picks are the ones in the table above, never Bass boost, Treble boost, Loudness, Soft, Headphones or Small speakers.</p>
+
+<h2 id="collapsed">Collapsed equalizer</h2>
+<p>When the equalizer is collapsed to its title bar, a small light at the left of the title shows whether it is on. See <a href="interface.html#shade-mode">Shade mode</a>.</p>
