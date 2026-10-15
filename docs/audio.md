@@ -12,7 +12,8 @@ file -> decode -> equalizer -> resample -> channel layout -> ring -> output stag
 ```
 
 1. **Decode.** A `Decoder` opens a file as a `DecodedStream` that yields interleaved `f32`
-   chunks in `[-1, 1]`. Isolated corrupt packets are skipped.
+   chunks in `[-1, 1]`. Isolated corrupt packets are skipped. Symphonia demuxes and decodes
+   everything except Opus, which it only demuxes: see "Opus" below.
 2. **Equalizer.** Ten RBJ peaking biquads (Q 1.41, one per `EQ_BANDS_HZ`) plus the preamp as a
    linear gain, run in `f64` at the source sample rate. A disabled or flat equalizer is a true
    bypass (bit identical). Bands at or above 0.45 of the sample rate are skipped. Changing the
@@ -114,7 +115,7 @@ it and keeps writing into the ring without draining it:
 - **Same format fast path.** If the successor has the same sample rate and channel count, the
   pipeline (equalizer state and resampler) is kept, nothing is flushed, and the output is
   continuous. Gapless trimming (encoder delay and padding) is done by Symphonia for MP3,
-  FLAC, Vorbis and ALAC.
+  FLAC, Vorbis and ALAC, and by our Opus decoder for Opus (see "Opus").
 - **Reformat case.** If the rate or channel count differ, the tail of the old pipeline is
   flushed into the ring and a new pipeline is built. The data is still contiguous in the
   ring, so in practice there is no audible gap; a tiny one would be acceptable.
@@ -140,6 +141,37 @@ seek. While stopped the position is the segment's start (0 after `stop`).
 If the stream has already moved on to the queued track when the user seeks the heard one, the
 engine reopens the heard track and puts the other back as the queued track.
 
+## Opus
+
+Symphonia 0.6.1 reads Opus packets from Ogg, Matroska and WebM but has no Opus decoder.
+`src/opus.rs` adds one: `OpusAudioDecoder` implements Symphonia's `AudioDecoder` over the
+pure Rust [`opus-decoder`](https://crates.io/crates/opus-decoder) crate (no FFI, no `unsafe`,
+MIT OR Apache-2.0), and the pipeline makes its decoders from a `CodecRegistry` that holds
+Symphonia's codecs plus this one. Containers, seeking and tags stay Symphonia's.
+
+- **Why this crate.** The alternative was `symphonia-adapter-libopus`, libopus itself, which
+  brings a C build (cmake) to the three platforms. `opus-decoder` claims the 12 RFC 8251 test
+  vectors. Checked here against libopus (`ffmpeg -c:a libopus`): the same length, 77 to 87 dB
+  of SNR on CELT, 42 to 47 dB on SILK and hybrid at low bitrates (it decodes in fixed point,
+  libopus in floating point), which is inaudible. It is young (0.1), so a panic while
+  decoding a packet is caught, the packet dropped and the decoder reset.
+- **Header.** The `OpusHead` (Ogg's first packet, Matroska's codec private data) gives the
+  channels, the pre-skip, the output gain (applied as a linear factor) and the channel
+  mapping. Families 0 and 1 are what Symphonia's Ogg reader accepts. One stream uses the
+  plain decoder, more use the multistream one, and family 1 is reordered from the Vorbis
+  channel order to Symphonia's planes.
+- **48 kHz.** Opus always decodes at 48 kHz. The stream takes its rate and channels from the
+  decoder's parameters, not the container's.
+- **Pre-skip.** Neither container trims it. The decoder drops it when the first packet after
+  a reset starts at or below zero (zero in Ogg, below zero in Matroska, which shifts its
+  timestamps back by the codec delay), so it is dropped at the start and after a rewind, not
+  after a seek into the middle. Ogg trims the end padding through the last packet's
+  `trim_end`; Matroska does not (its `DiscardPadding` is ignored), so a WebM track can end up
+  to one packet (20 ms) long.
+- **Seeking.** Ogg timestamps include the pre-skip, so a seek adds the track's `delay` to the
+  target. Opus needs 80 ms of decoding to converge after a seek (RFC 7845, section 4.6): the
+  stream seeks 80 ms early and skips the extra frames.
+
 ## Seeking and Symphonia workarounds
 
 `seek` uses accurate mode and skips the frames between the packet reached and the target, so
@@ -149,6 +181,13 @@ files, all handled in the crate:
 - **FLAC near the start.** Symphonia 0.6.1 returns a broken stream when the target falls in
   the first packet (about 23 ms), and seeking to 0 after the end of the stream does the same.
   Any seek below 200 ms therefore reopens the container and skips frames to the target.
+- **Matroska after the end.** Once the reader has read to the end of the file, a seek fails
+  with "the element is not an ancestor of the current element". The engine decodes up to a
+  ring ahead of what is heard, so this hits seeks in the last 300 ms of a track. Any seek
+  error other than `OutOfRange` reopens the container and tries again.
+- **Matroska length and title.** The reader gives no track length, only the segment's, which
+  is used instead. The segment title (where ffmpeg puts `title`) is not exposed, so those
+  tracks show their file name.
 - **Ogg near the end.** A seek within about 1 ms of the end returns `OutOfRange`. The engine
   clamps seeks to `duration - 1 ms`; a failure is reported as an `Error` event and playback
   carries on.
@@ -171,6 +210,7 @@ files, all handled in the crate:
 | Piece | Crate |
 | --- | --- |
 | Decoding | `symphonia` 0.6.1, feature `all` |
+| Opus decoding | `opus-decoder` 0.1.1 |
 | Output | `cpal` 0.18.2 |
 | Resampling | `rubato` 5.0.1 (re-exports `audioadapter`, used for its buffers) |
 | Analysis | `realfft` 3.5.0 |
@@ -190,8 +230,6 @@ each extra platform). AIMP started on BASS and has had its own engine since vers
 
 ## Not done yet
 
-- Opus: probed and shown as `OPUS`, but there is no decoder (Symphonia has none yet; the
-  plan was the `opus` crate over native libopus). `.ogg` files with Opus fail to open.
 - WavPack and APE (Monkey's Audio): not decodable; APE is only a tag format in Symphonia.
 - AAC gapless: Symphonia's AAC decoder is without gapless support.
 - A `ffmpeg-next` fallback behind a cargo feature, off by default, for exotic formats.

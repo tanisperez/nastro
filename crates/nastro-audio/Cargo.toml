@@ -10,6 +10,7 @@ authors.workspace = true
 [dependencies]
 nastro-core = { path = "../nastro-core" }
 symphonia = { workspace = true }
+opus-decoder = { workspace = true }
 cpal = { workspace = true }
 rubato = { workspace = true }
 realfft = { workspace = true }

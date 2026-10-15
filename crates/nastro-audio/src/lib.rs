@@ -10,7 +10,8 @@
 //! ```
 //!
 //! 1. **Decode**: a [`Decoder`] turns the file into interleaved `f32` chunks
-//!    ([`SymphoniaDecoder`] is the real one; probing tags is cheap and never decodes).
+//!    ([`SymphoniaDecoder`] is the real one, with Opus added through `opus-decoder`; probing
+//!    tags is cheap and never decodes).
 //! 2. **Equalizer**: ten peaking filters and a preamp, at the sample rate of the source.
 //! 3. **Resample**: a rubato sinc resampler when the source rate differs from the device
 //!    rate, then the channel layout is converted to the device's (mono is copied to both
@@ -37,6 +38,7 @@ pub mod decoder;
 pub mod engine;
 pub mod eq;
 pub mod error;
+mod opus;
 
 #[cfg(test)]
 mod test_util;

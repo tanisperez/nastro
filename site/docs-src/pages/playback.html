@@ -11,19 +11,17 @@ description: What Nastro plays, how the transport buttons behave, gapless playba
     <tbody>
         <tr><td>FLAC</td><td><code>flac</code></td><td>FLAC</td></tr>
         <tr><td>MP3 and MPEG audio</td><td><code>mp3</code>, <code>mp2</code>, <code>mp1</code></td><td>MP3, MP2, MP1</td></tr>
-        <tr><td>Ogg</td><td><code>ogg</code>, <code>oga</code></td><td>Vorbis, FLAC</td></tr>
+        <tr><td>Ogg</td><td><code>ogg</code>, <code>oga</code>, <code>opus</code></td><td>Vorbis, Opus, FLAC</td></tr>
         <tr><td>WAV</td><td><code>wav</code>, <code>wave</code></td><td>PCM, ADPCM</td></tr>
         <tr><td>AIFF</td><td><code>aif</code>, <code>aiff</code>, <code>aifc</code></td><td>PCM</td></tr>
         <tr><td>MPEG-4 audio</td><td><code>m4a</code>, <code>mp4</code>, <code>m4b</code>, <code>aac</code></td><td>AAC, ALAC</td></tr>
         <tr><td>Core Audio</td><td><code>caf</code></td><td>PCM, ALAC, AAC</td></tr>
-        <tr><td>Matroska and WebM</td><td><code>mka</code>, <code>mkv</code>, <code>webm</code></td><td>FLAC, Vorbis, MP3, AAC, ALAC, PCM</td></tr>
+        <tr><td>Matroska and WebM</td><td><code>mka</code>, <code>mkv</code>, <code>webm</code></td><td>Opus, Vorbis, FLAC, MP3, AAC, ALAC, PCM</td></tr>
     </tbody>
 </table></div>
 <p>Files with any other extension are ignored when you add them. Nastro decides by the extension, so a supported extension on a file whose contents it cannot decode is added to the playlist and then skipped when its turn comes, see <a href="#errors">Errors and skipped tracks</a>.</p>
-<div class="callout warning">
-    <p class="title">Opus is not supported yet</p>
-    <p>Opus audio is not decoded yet, so <code>.opus</code> files and Ogg, Matroska or WebM files that contain Opus do not play. Most <code>.webm</code> audio is Opus. WavPack (<code>.wv</code>) and Monkey&#39;s Audio (<code>.ape</code>) are not supported either.</p>
-</div>
+<p>WavPack (<code>.wv</code>) and Monkey&#39;s Audio (<code>.ape</code>) are not supported yet.</p>
+<p>Opus always plays at 48 kHz, whatever the rate of the original recording, so the display shows <code>48 kHz</code> for every Opus file. Matroska and WebM files do not show the title that ffmpeg and most tools store in them, so they show their file name instead.</p>
 <p>Nastro reads the title, artist, album and genre tags, and the length, of every file you add. A track without a title tag shows its file name without the extension. While a track plays, the display shows the codec, the bitrate when known, the sample rate and the channels, see <a href="interface.html#display">The display</a>.</p>
 <p>If the sample rate of a file differs from the one of your audio output, Nastro resamples it. More than two channels are mixed down to stereo, and a mono file plays on both speakers.</p>
 

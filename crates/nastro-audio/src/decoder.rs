@@ -9,10 +9,11 @@ use std::time::Duration;
 
 use nastro_core::{StreamInfo, TrackMeta};
 use symphonia::core::codecs::CodecParameters;
+use symphonia::core::codecs::audio::well_known::CODEC_ID_OPUS;
 use symphonia::core::codecs::audio::{
     AudioCodecId, AudioCodecParameters, AudioDecoder, AudioDecoderOptions,
 };
-use symphonia::core::errors::Error as SymError;
+use symphonia::core::errors::{Error as SymError, SeekErrorKind};
 use symphonia::core::formats::probe::Hint;
 use symphonia::core::formats::{FormatOptions, FormatReader, SeekMode, SeekTo, TrackType};
 use symphonia::core::io::MediaSourceStream;
@@ -23,8 +24,8 @@ use crate::error::AudioError;
 
 /// File extensions (lowercase, no dot) the decoder can handle.
 const EXTENSIONS: &[&str] = &[
-    "mp1", "mp2", "mp3", "flac", "ogg", "oga", "wav", "wave", "aif", "aiff", "aifc", "m4a", "mp4",
-    "m4b", "aac", "caf", "mka", "mkv", "webm",
+    "mp1", "mp2", "mp3", "flac", "ogg", "oga", "opus", "wav", "wave", "aif", "aiff", "aifc", "m4a",
+    "mp4", "m4b", "aac", "caf", "mka", "mkv", "webm",
 ];
 
 /// The file extensions the audio pipeline can play (lowercase, without the dot).
@@ -88,6 +89,10 @@ pub struct SymphoniaDecoder;
 /// Seeks to a position below this reopen the file instead of using the container's seek.
 const REWIND_BELOW: Duration = Duration::from_millis(200);
 
+/// The decoding an Opus decoder needs after a seek before its output is right (RFC 7845,
+/// section 4.6).
+const OPUS_PRE_ROLL: Duration = Duration::from_millis(80);
+
 /// A probed container: the reader plus what was found about its audio track.
 struct Opened {
     format: Box<dyn FormatReader>,
@@ -95,6 +100,8 @@ struct Opened {
     params: AudioCodecParameters,
     time_base: Option<TimeBase>,
     duration: Option<Duration>,
+    /// Frames the encoder put before the audio, as the container reports them.
+    delay: u32,
     file_len: u64,
 }
 
@@ -136,13 +143,20 @@ fn open_container(path: &Path) -> Result<Opened, AudioError> {
     };
     let params = params.clone();
     let (track_id, time_base, num_frames) = (track.id, track.time_base, track.num_frames);
-    let duration = track_duration(num_frames, params.sample_rate, track.duration, time_base);
+    let delay = track.delay.unwrap_or(0);
+    let duration = track_duration(num_frames, params.sample_rate, track.duration, time_base)
+        .or_else(|| {
+            // Matroska gives the length of the whole file only.
+            let info = format.media_info();
+            track_duration(None, None, info.duration, info.time_base)
+        });
     Ok(Opened {
         format,
         track_id,
         params,
         time_base,
         duration,
+        delay,
         file_len,
     })
 }
@@ -233,7 +247,7 @@ fn codec_name(id: AudioCodecId) -> String {
     } else if ADPCM.contains(&id) {
         "ADPCM".into()
     } else {
-        symphonia::default::get_codecs()
+        crate::opus::codecs()
             .get_audio_decoder(id)
             .map(|decoder| decoder.codec.info.short_name.to_uppercase())
             .unwrap_or_else(|| "UNKNOWN".into())
@@ -267,19 +281,8 @@ impl Decoder for SymphoniaDecoder {
     fn open(&self, path: &Path) -> Result<Box<dyn DecodedStream>, AudioError> {
         let opened = open_container(path)?;
         let info = stream_info(&opened);
-        let sample_rate = opened
-            .params
-            .sample_rate
-            .ok_or_else(|| AudioError::Unsupported("unknown sample rate".into()))?;
-        let channels = opened
-            .params
-            .channels
-            .as_ref()
-            .map(|channels| channels.count() as u16)
-            .filter(|count| *count > 0)
-            .ok_or_else(|| AudioError::Unsupported("unknown channel layout".into()))?;
         let options = AudioDecoderOptions::default().gapless(true);
-        let decoder = symphonia::default::get_codecs()
+        let decoder = crate::opus::codecs()
             .make_audio_decoder(&opened.params, &options)
             .map_err(|err| match err {
                 SymError::Unsupported(_) => {
@@ -287,6 +290,26 @@ impl Decoder for SymphoniaDecoder {
                 }
                 other => map_error(other),
             })?;
+        // The decoder's parameters, since a codec may decode at another rate than the container
+        // says (Opus is always 48 kHz).
+        let params = decoder.codec_params();
+        let sample_rate = params
+            .sample_rate
+            .ok_or_else(|| AudioError::Unsupported("unknown sample rate".into()))?;
+        let channels = params
+            .channels
+            .as_ref()
+            .map(|channels| channels.count() as u16)
+            .filter(|count| *count > 0)
+            .ok_or_else(|| AudioError::Unsupported("unknown channel layout".into()))?;
+        // Ogg timestamps of Opus count the pre-skip, which the decoder drops, so seeks move
+        // by it to land where asked. Matroska shifts its timestamps itself and reports none.
+        let (pre_roll, seek_offset) = if opened.params.codec == CODEC_ID_OPUS {
+            let offset = Duration::from_secs_f64(f64::from(opened.delay) / f64::from(sample_rate));
+            (OPUS_PRE_ROLL, offset)
+        } else {
+            (Duration::ZERO, Duration::ZERO)
+        };
         Ok(Box::new(SymphoniaStream {
             path: path.to_path_buf(),
             format: opened.format,
@@ -299,6 +322,8 @@ impl Decoder for SymphoniaDecoder {
             channels,
             info,
             duration: opened.duration,
+            pre_roll,
+            seek_offset,
             skip_frames: 0,
             scratch: Vec::new(),
         }))
@@ -467,6 +492,11 @@ struct SymphoniaStream {
     channels: u16,
     info: StreamInfo,
     duration: Option<Duration>,
+    /// How much earlier than the target a seek starts decoding, for codecs that need a few
+    /// packets to converge.
+    pre_roll: Duration,
+    /// How much later than the playing position the container timestamps are.
+    seek_offset: Duration,
     /// Frames to drop from the output after a seek that landed before the target.
     skip_frames: usize,
     scratch: Vec<f32>,
@@ -548,19 +578,31 @@ impl DecodedStream for SymphoniaStream {
                 (position.as_secs_f64() * f64::from(self.sample_rate)).round() as usize;
             return Ok(position);
         }
-        let time = Time::try_from_secs_f64(position.as_secs_f64())
+        let start = position.saturating_sub(self.pre_roll);
+        let time = Time::try_from_secs_f64((start + self.seek_offset).as_secs_f64())
             .ok_or_else(|| AudioError::Seek("position out of range".into()))?;
-        let to = SeekTo::Time {
-            time,
-            track_id: Some(self.track_id),
-        };
-        let seeked = self
+        let track_id = Some(self.track_id);
+        let seeked = match self
             .format
-            .seek(SeekMode::Accurate, to)
-            .map_err(map_error)?;
+            .seek(SeekMode::Accurate, SeekTo::Time { time, track_id })
+        {
+            Ok(seeked) => seeked,
+            Err(SymError::SeekError(SeekErrorKind::OutOfRange)) => {
+                return Err(map_error(SymError::SeekError(SeekErrorKind::OutOfRange)));
+            }
+            // Symphonia's Matroska reader cannot seek once it has read to the end of the file,
+            // which the engine does up to a ring ahead of what is heard. A fresh reader can.
+            Err(err) => {
+                log::debug!("seek failed ({err}), retrying on a reopened file");
+                self.format = open_container(&self.path)?.format;
+                self.format
+                    .seek(SeekMode::Accurate, SeekTo::Time { time, track_id })
+                    .map_err(map_error)?
+            }
+        };
         self.decoder.reset();
         let gap = self.seconds(seeked.required_ts) - self.seconds(seeked.actual_ts);
-        let gap = gap.max(0.0);
+        let gap = gap.max(0.0) + (position - start).as_secs_f64();
         self.skip_frames = (gap * f64::from(self.sample_rate)).round() as usize;
         Ok(position)
     }
@@ -678,6 +720,80 @@ mod tests {
                 let skipped = (ms as f64 * 44.1).round() as usize;
                 assert_eq!(rest, whole - skipped, "{name} at {ms} ms");
             }
+        }
+    }
+
+    /// Zero crossings per second of the first channel, twice the frequency of a sine.
+    fn crossings_per_second(samples: &[f32], channels: usize, rate: u32) -> f64 {
+        let first: Vec<f32> = samples.iter().step_by(channels).copied().collect();
+        let crossings = first
+            .windows(2)
+            .filter(|pair| (pair[0] < 0.0) != (pair[1] < 0.0))
+            .count();
+        crossings as f64 * f64::from(rate) / first.len() as f64
+    }
+
+    #[test]
+    fn opus_probes_with_tags_at_48_khz() {
+        // Matroska keeps the title outside its tags, where Symphonia does not read it.
+        for (name, channels, title) in [("sine.opus", 2, Some("Sine Test")), ("sine.webm", 1, None)]
+        {
+            let probe = SymphoniaDecoder.probe(&fixture(name)).unwrap();
+            assert_eq!(probe.meta.title.as_deref(), title, "{name}");
+            assert_eq!(probe.meta.artist.as_deref(), Some("Nastro Tests"), "{name}");
+            let duration = probe.meta.duration.expect(name);
+            assert!(
+                duration.abs_diff(Duration::from_secs(1)) < Duration::from_millis(20),
+                "{name}: {duration:?}"
+            );
+            assert_eq!(probe.info.codec, "OPUS", "{name}");
+            assert_eq!(probe.info.sample_rate, 48_000, "{name}");
+            assert_eq!(probe.info.channels, channels, "{name}");
+        }
+    }
+
+    #[test]
+    fn opus_decodes_a_clean_tone_without_the_pre_skip() {
+        // Ogg knows the exact length: one second, with the pre-skip and the padding trimmed.
+        // Matroska has no end trimming, so its last packet may be a little longer.
+        for (name, tolerance) in [("sine.opus", 0), ("sine.webm", 960)] {
+            let mut stream = SymphoniaDecoder.open(&fixture(name)).unwrap();
+            assert_eq!(stream.sample_rate(), 48_000, "{name}");
+            let channels = usize::from(stream.channels());
+            let samples = decode_all(stream.as_mut());
+            let frames = samples.len() / channels;
+            assert!(near(frames, 48_000, tolerance), "{name}: {frames} frames");
+            let peak = samples.iter().fold(0.0f32, |m, s| m.max(s.abs()));
+            // The ffmpeg sine has an amplitude of 1/8, less in stereo.
+            assert!(peak > 0.05 && peak <= 0.2, "{name}: peak {peak}");
+            let rate = crossings_per_second(&samples, channels, 48_000);
+            assert!((rate - 880.0).abs() < 10.0, "{name}: {rate} crossings/s");
+        }
+    }
+
+    #[test]
+    fn opus_seeks_land_on_the_target() {
+        for name in ["sine.opus", "sine.webm"] {
+            let mut stream = SymphoniaDecoder.open(&fixture(name)).unwrap();
+            let channels = usize::from(stream.channels());
+            let whole = decode_all(stream.as_mut()).len() / channels;
+            stream.seek(Duration::from_millis(500)).unwrap();
+            let rest = decode_all(stream.as_mut());
+            let left = rest.len() / channels;
+            assert!(
+                near(left, whole - 24_000, 480),
+                "{name}: {left} of {whole} left"
+            );
+            // The pre-roll leaves the decoder converged: the tone is clean right away.
+            let head = &rest[..4_800 * channels];
+            let rate = crossings_per_second(head, channels, 48_000);
+            assert!((rate - 880.0).abs() < 25.0, "{name}: {rate} crossings/s");
+            stream.seek(Duration::ZERO).unwrap();
+            assert_eq!(
+                decode_all(stream.as_mut()).len() / channels,
+                whole,
+                "{name}"
+            );
         }
     }
 

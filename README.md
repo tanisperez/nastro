@@ -38,22 +38,22 @@ The same window in the other built-in skins, Graphite, Porcelain and Nebula:
 
 ## Supported formats
 
-Decoding is done by [Symphonia](https://github.com/pdeljanov/Symphonia), in pure Rust.
+Decoding is done in pure Rust by [Symphonia](https://github.com/pdeljanov/Symphonia), and
+Opus by [opus-decoder](https://crates.io/crates/opus-decoder).
 
 | Format | Extensions | Codecs |
 | --- | --- | --- |
 | FLAC | `flac` | FLAC |
 | MP3 and MPEG audio | `mp3`, `mp2`, `mp1` | MP3, MP2, MP1 |
-| Ogg | `ogg`, `oga` | Vorbis, FLAC |
+| Ogg | `ogg`, `oga`, `opus` | Vorbis, Opus, FLAC |
 | WAV | `wav`, `wave` | PCM, ADPCM |
 | AIFF | `aif`, `aiff`, `aifc` | PCM |
 | MPEG-4 audio | `m4a`, `mp4`, `m4b`, `aac` | AAC, ALAC |
 | Core Audio | `caf` | PCM, ALAC, AAC |
-| Matroska and WebM | `mka`, `mkv`, `webm` | FLAC, Vorbis, MP3, AAC, ALAC, PCM |
+| Matroska and WebM | `mka`, `mkv`, `webm` | Opus, Vorbis, FLAC, MP3, AAC, ALAC, PCM |
 
-Not supported yet: Opus (`.opus` files, and Opus inside Ogg, Matroska or WebM), WavPack and
-Monkey's Audio. Gapless playback covers MP3, FLAC, Vorbis and ALAC; AAC plays with the encoder
-gap. Playlists are read and written as M3U (`m3u`, `m3u8`).
+Not supported yet: WavPack and Monkey's Audio. Gapless playback covers MP3, FLAC, Vorbis, ALAC
+and Opus; AAC plays with the encoder gap. Playlists are read and written as M3U (`m3u`, `m3u8`).
 
 ## Building from source
 
