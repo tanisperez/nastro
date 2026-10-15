@@ -55,6 +55,19 @@ Opus by [opus-decoder](https://crates.io/crates/opus-decoder).
 Not supported yet: WavPack and Monkey's Audio. Gapless playback covers MP3, FLAC, Vorbis, ALAC
 and Opus; AAC plays with the encoder gap. Playlists are read and written as M3U (`m3u`, `m3u8`).
 
+Notes on Opus and Matroska:
+
+- Opus always decodes at 48 kHz, whatever the rate of the original recording, so the display
+  shows `48 kHz` for every Opus file. Multichannel Opus (up to 7.1) is downmixed to stereo like
+  any other surround file.
+- Opus in WebM and Matroska can end up to 20 ms long, because the container's end padding is
+  not trimmed. In Ogg the length is exact.
+- Matroska and WebM files show their file name instead of their title: Symphonia does not read
+  the segment title, where ffmpeg and most tools store it. The artist and genre tags are read.
+
+How the Opus decoder fits in the pipeline, and how it compares with libopus, is in
+[docs/audio.md](docs/audio.md#opus).
+
 ## Building from source
 
 Install Rust with [`rustup`](https://rustup.rs). The toolchain version is pinned in
