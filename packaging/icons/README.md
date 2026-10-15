@@ -1,5 +1,11 @@
 # Nastro icons
 
+A cassette in the Silver skin's colors: a metal body, a display window with two reels, and the
+bottom trapezoid with its two holes. The tape between the reels is a sound wave, and the left
+reel holds more tape than the right one, so something is playing. The design session also drew
+colorways for the other three skins (Graphite, Porcelain, Nebula), but they were not exported:
+only the Silver icon exists as files.
+
 | File | Use |
 |---|---|
 | `nastro.svg` | The official icon, Silver colorway. Master for every other size, the hicolor `scalable` icon on Linux and the logo of the website. |

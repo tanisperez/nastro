@@ -3,8 +3,8 @@
 How Nastro is put together and why. For the project rules (working style, performance,
 logging) read `AGENTS.md`; for the look, `docs/design-system.md`; for the skin file,
 `docs/skin-format.md`; for the audio engine, `docs/audio.md`; for gpui pitfalls,
-`docs/gpui-notes.md`. The design handoff that started the project is in `design/handoff.md`,
-with its artboards in `design/artboards.html`.
+`docs/gpui-notes.md`. The design handoff that started the project, with its artboards, is kept
+under the git tag `design-mockups`; what it decided lives in these documents.
 
 ## Principles
 
@@ -109,9 +109,10 @@ The handoff's plan, implemented for version 1 on every platform:
   (`SkinTheme::panel_shadow_reach`, checked by a test): the window edge would cut it in a
   straight line around the whole group.
 - gpui-pre 0.3.7 cannot move a window programmatically, and Wayland does not let a client know
-  or set its position. So the layout never goes negative: the window's top left corner is
-  fixed, and the window size is the bottom right corner of the displayed panels plus the margin.
-  The window is resized (`Window::resize`) whenever the layout changes.
+  or set its position (the `ext-placement` protocol is a draft, and would only suggest a
+  position before the window is mapped). So the layout never goes negative: the window's top
+  left corner is fixed, and the window size is the bottom right corner of the displayed panels
+  plus the margin. The window is resized (`Window::resize`) whenever the layout changes.
 - Dragging the player's title bar or menu bar moves the window (`start_window_move`). Dragging
   the equalizer's or the playlist's title bar moves that panel inside the window, snapping
   magnetically (`Layout::move_panel`). The playlist's corner grip resizes it.

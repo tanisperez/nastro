@@ -193,4 +193,41 @@ index = "#8fb0d2"
 ## Classic skins
 
 Importing classic `.wsz` skins (a ZIP of bitmap sprites plus `pledit.txt`, `viscolor.txt` and
-`region.txt`) is planned. It is not available yet.
+`region.txt`) is planned. It is not available yet. The plan, from the design session:
+
+- A classic skin has a fixed geometry (the main window is 275 x 116) and is drawn from its
+  sprites, so it needs a second, sprite based renderer next to the native one. The sprites are
+  sliced and scaled with nearest neighbour to 1x, 2x and 3x when the skin loads, cached per
+  scale, never in a render path.
+- The component tree is the same for both formats; only how each piece is painted changes.
+- The tokens are filled from the skin's text files, so panels with no classic sprite (and the
+  chrome around them) still get its colors.
+
+| Token | Classic source |
+| --- | --- |
+| `pl_bg`, `pl_fg`, `pl_current`, `pl_selected_bg`, playlist font | `pledit.txt`: `NormalBG`, `Normal`, `Current`, `SelectedBG`, `Font` |
+| `lcd_top`, `lcd_bottom` | `viscolor.txt`, color 0 |
+| `vis_bar` | `viscolor.txt`, colors 2 to 17 |
+| `vis_osc` | `viscolor.txt`, colors 18 to 22 |
+| `vis_peak` | `viscolor.txt`, color 23 |
+| `accent` | Derived from `pledit.txt` `Current` |
+| Frame tokens | None: the frame is the bitmap itself |
+
+| Component | Classic sprite |
+| --- | --- |
+| Title bar | `titlebar.bmp` |
+| Transport buttons | `cbuttons.bmp` |
+| Time digits | `numbers.bmp` or `nums_ex.bmp` |
+| Scrolling title | `text.bmp` |
+| Play, pause and stop state | `playpaus.bmp` |
+| Mono and stereo | `monoster.bmp` |
+| Seek bar | `posbar.bmp` |
+| Volume | `volume.bmp` |
+| Balance | `balance.bmp` |
+| Shuffle, repeat, EQ and PL toggles | `shufrep.bmp` |
+| Equalizer and its curve | `eqmain.bmp` |
+| Playlist frame | `pledit.bmp` |
+| Window shape | `region.txt` |
+
+Modern `.wal` skins (an XML layout plus compiled MAKI scripts) are out of scope: they would
+need a MAKI virtual machine and a layout engine of their own.

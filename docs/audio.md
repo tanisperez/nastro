@@ -186,7 +186,7 @@ frame accurate position and gapless transitions, and `rodio` offers none of thos
 
 **Rejected: BASS (un4seen).** Closed source; free only for products that make no money;
 commercial licences are per platform (950 EUR single commercial, 125 EUR shareware, 40 % off
-each extra platform). See `design/handoff.md`, section 7.
+each extra platform). AIMP started on BASS and has had its own engine since version 3.
 
 ## Not done yet
 

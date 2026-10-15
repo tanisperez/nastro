@@ -1,8 +1,9 @@
 # Nastro design system
 
-Reference for anyone touching the UI. It summarizes the design handoff (`design/handoff.md`,
-section 5, and the artboards in `design/artboards.html`) as implemented. If this file and the
-code disagree, the code wins; fix this file.
+Reference for anyone touching the UI. It summarizes the design handoff of 2026-10-14 as
+implemented. If this file and the code disagree, the code wins; fix this file. The handoff and
+its artboards (the player in the four skins and the layout presets) were removed once
+implemented; they are kept under the git tag `design-mockups`.
 
 Nastro has two visual layers:
 
@@ -47,9 +48,10 @@ All under `crates/nastro-app/src/`:
 
 ## Skin tokens
 
-The full table with the four built-in skins is in `design/handoff.md`, section 5, "Color
-tokens", and in `docs/skin-format.md`. Derived at runtime, not stored: `text_disabled` (text at
-45 %), the playlist row hover (white at 7 %), the pressed control (the gradient inverted).
+What each token is for is in `docs/skin-format.md`; the values of the four built-in skins are
+their files, `crates/nastro-skin/skins/*.toml`. Derived at runtime, not stored:
+`text_disabled` (text at 45 %), the playlist row hover (white at 7 %), the pressed control (the
+gradient inverted).
 
 ### Gradients and shadows
 
