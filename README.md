@@ -36,6 +36,25 @@ The same window in the other built-in skins, Graphite, Porcelain and Nebula:
 - Light: an idle window does no work.
 - Fully open source.
 
+## Supported formats
+
+Decoding is done by [Symphonia](https://github.com/pdeljanov/Symphonia), in pure Rust.
+
+| Format | Extensions | Codecs |
+| --- | --- | --- |
+| FLAC | `flac` | FLAC |
+| MP3 and MPEG audio | `mp3`, `mp2`, `mp1` | MP3, MP2, MP1 |
+| Ogg | `ogg`, `oga` | Vorbis, FLAC |
+| WAV | `wav`, `wave` | PCM, ADPCM |
+| AIFF | `aif`, `aiff`, `aifc` | PCM |
+| MPEG-4 audio | `m4a`, `mp4`, `m4b`, `aac` | AAC, ALAC |
+| Core Audio | `caf` | PCM, ALAC, AAC |
+| Matroska and WebM | `mka`, `mkv`, `webm` | FLAC, Vorbis, MP3, AAC, ALAC, PCM |
+
+Not supported yet: Opus (`.opus` files, and Opus inside Ogg, Matroska or WebM), WavPack and
+Monkey's Audio. Gapless playback covers MP3, FLAC, Vorbis and ALAC; AAC plays with the encoder
+gap. Playlists are read and written as M3U (`m3u`, `m3u8`).
+
 ## Building from source
 
 Install Rust with [`rustup`](https://rustup.rs). The toolchain version is pinned in
