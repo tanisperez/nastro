@@ -23,9 +23,14 @@ Note that `gpui-kit = "0.7.0"` in a fresh lockfile resolves to a newer 0.7.x tha
 - `Window::resize(size)` sets the content size. On Wayland the top left corner stays put. On
   X11 under KWin the window may be moved when it is resized, so do not trust screen positions
   across a resize when testing on XWayland.
-- `Window::set_input_region(Some(&rects))` (Wayland only, a no-op elsewhere) makes clicks
-  outside the rectangles reach the windows behind. `None` restores the whole window. Popups
-  drawn inside the window (menus) are subject to it, so lift it while one is open.
+- `Window::set_input_region(Some(&rects))` (Wayland only, a no-op elsewhere, still in
+  gpui-pre 0.3.9) makes clicks outside the rectangles reach the windows behind. `None` restores
+  the whole window. Popups drawn inside the window (menus) are subject to it, so lift it while
+  one is open. On Windows the equivalent is a window region (`SetWindowRgn`), which also clips
+  drawing; `HTTRANSPARENT` from `WM_NCHITTEST` does not work, it only passes the click to
+  windows of the same thread.
+- `Window` has an inherent `window_handle()` that returns gpui's `AnyWindowHandle`. For the
+  native handle call the trait: `raw_window_handle::HasWindowHandle::window_handle(window)`.
 - `Window::start_window_move()` on mouse down hands the drag to the compositor. Events may stop
   arriving during the move, so do not expect a mouse up afterwards.
 - `WindowOptions::app_owns_titlebar_drag` matters only on macOS; set it for windows that move

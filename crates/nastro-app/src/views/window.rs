@@ -1,7 +1,7 @@
 //! The main window's root view. The window is transparent and holds the docked group: each
 //! displayed panel is placed at its position from `nastro-dock`, the window is resized to fit
-//! them, and on Wayland its input region is limited to the panels so clicks in the gaps reach
-//! whatever is behind (`docs/architecture.md`, "Windows and docking").
+//! them, and on Wayland and Windows its input is limited to the panels so clicks in the gaps
+//! reach whatever is behind (`docs/architecture.md`, "Windows and docking").
 
 use gpui_kit::AppContext as _;
 use gpui_kit::{
@@ -15,7 +15,9 @@ use nastro_dock::{LayoutPreset, PanelId};
 use crate::actions::*;
 use crate::app::{commands, models, persist};
 use crate::keymap::WINDOW_CONTEXT;
+use crate::platform;
 use crate::state::settings::SkinScale;
+use crate::theme::SkinExt;
 use crate::views::equalizer::EqualizerPanel;
 use crate::views::player::{PlayerPanel, toggle_shade, toggle_visible};
 use crate::views::playlist::PlaylistPanel;
@@ -28,8 +30,8 @@ pub struct NastroWindow {
     playlist: Entity<PlaylistPanel>,
     /// The window size last requested, so a resize is only asked for when it changes.
     applied_size: Option<Size<Pixels>>,
-    /// The input region last set.
-    applied_region: Option<Vec<Bounds<Pixels>>>,
+    /// The input region last set, and the window scale factor it was set at.
+    applied_region: Option<(Option<Vec<Bounds<Pixels>>>, f32)>,
     _subscriptions: Vec<Subscription>,
 }
 
@@ -41,10 +43,15 @@ impl NastroWindow {
         let equalizer = cx.new(|cx| EqualizerPanel::new(focus.clone(), cx));
         let playlist = cx.new(|cx| PlaylistPanel::new(focus.clone(), window, cx));
         let shell = models(cx).shell.clone();
-        let subscriptions = vec![cx.observe_in(&shell, window, |view, _, window, cx| {
-            view.sync_window(window, cx);
-            cx.notify();
-        })];
+        let subscriptions = vec![
+            cx.observe_in(&shell, window, |view, _, window, cx| {
+                view.sync_window(window, cx);
+                cx.notify();
+            }),
+            // Windows takes the region in device pixels: a new scale factor (another display)
+            // needs it again.
+            cx.observe_window_bounds(window, |view, window, cx| view.sync_window(window, cx)),
+        ];
         focus.focus(window, cx);
         let mut view = NastroWindow {
             focus,
@@ -59,7 +66,7 @@ impl NastroWindow {
         view
     }
 
-    /// Resizes the window to the panels and limits its input region to them.
+    /// Resizes the window to the panels and limits its input to them.
     fn sync_window(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let shell = models(cx).shell.read(cx);
         let size = shell.window_size();
@@ -78,10 +85,11 @@ impl NastroWindow {
             self.applied_size = Some(size);
         }
         // While a menu is open it may extend past the panels, so the whole window takes input.
-        let region = (!menu_open).then_some(region);
-        if self.applied_region != region {
-            window.set_input_region(region.as_deref());
-            self.applied_region = region;
+        let region = ((!menu_open).then_some(region), window.scale_factor());
+        if self.applied_region.as_ref() != Some(&region) {
+            let shadow = cx.skin().panel_shadow_reach();
+            platform::limit_input(window, region.0.as_deref(), shadow);
+            self.applied_region = Some(region);
         }
     }
 

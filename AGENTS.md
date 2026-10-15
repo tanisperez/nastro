@@ -82,7 +82,9 @@ unit tests; views only render and forward input.
 - Errors: `thiserror` enums in library crates, `anyhow` only in `nastro-app`. No `unwrap()` or
   `expect()` outside tests, except for truly impossible states, with a comment saying why.
 - Lints: clippy `all`, `unwrap_used` and `expect_used` warn (`make lint` turns warnings into
-  errors); `unsafe_code` is forbidden. Tests may allow the first two at module level.
+  errors). Tests may allow the first two at module level. `unsafe_code` is denied; the one
+  exception is `crates/nastro-app/src/platform/win32.rs` (the main window's region on Windows,
+  which gpui does not offer), with a `SAFETY` comment on every block. Do not add another.
 - Dependencies: versions live once in `[workspace.dependencies]`; crates use
   `dep.workspace = true`. Do not add a dependency without a clear reason.
 - No `gpui`, `symphonia`, `cpal` or `toml` types in a public API outside their own crate:

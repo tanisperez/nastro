@@ -13,6 +13,7 @@ mod assets;
 mod instance;
 mod keymap;
 mod logging;
+mod platform;
 mod state;
 mod theme;
 mod views;

@@ -33,7 +33,7 @@ description: What to check when Nastro plays no sound, and how to find and raise
 <p>All the panels live inside one transparent window. This has some consequences you may notice:</p>
 <ul>
     <li><strong>A panel cannot go to the left of, or above, the top-left panel of the window.</strong> Positions never go negative. To place the group elsewhere on your screen, drag the player's title bar, which moves the whole window. To put the equalizer or the playlist on the other side of the player, use <strong>View</strong>, <strong>Layout</strong>.</li>
-    <li><strong>On Linux with Wayland, clicks in the gaps between panels go to the windows behind Nastro.</strong> On X11, macOS and Windows the gaps still belong to Nastro's window, so a click there does not reach what is under it.</li>
+    <li><strong>On Linux with Wayland and on Windows, clicks in the gaps between panels go to the windows behind Nastro.</strong> On Windows the thin shadow around each panel still belongs to Nastro. On X11 and macOS the gaps still belong to Nastro's window, so a click there does not reach what is under it.</li>
     <li><strong>While a menu is open, the window grows downwards</strong> to make room for it. The extra space is transparent and the window goes back to its size when the menu closes.</li>
 </ul>
 

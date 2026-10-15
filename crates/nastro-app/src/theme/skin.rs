@@ -5,7 +5,7 @@
 use std::rc::Rc;
 
 use gpui_kit::{
-    App, Background, BoxShadow, Global, Hsla, Pixels, Rgba, SharedString, linear_color_stop,
+    App, Background, BoxShadow, Edges, Global, Hsla, Pixels, Rgba, SharedString, linear_color_stop,
     linear_gradient, point, px,
 };
 
@@ -202,8 +202,20 @@ impl SkinTheme {
     pub fn panel_shadow(&self) -> Vec<BoxShadow> {
         vec![
             self.inset(0.0, 1.0, 0.0, self.colors.bevel_hi),
-            self.drop(12.0, 32.0, black(0.35)),
+            self.drop(PANEL_DROP_Y, PANEL_DROP_BLUR, black(0.35)),
         ]
+    }
+
+    /// How far the panel drop shadow reaches past each side of a panel. gpui draws a shadow up
+    /// to three standard deviations (one and a half CSS blurs) around its offset box.
+    pub fn panel_shadow_reach(&self) -> Edges<Pixels> {
+        let reach = 1.5 * PANEL_DROP_BLUR;
+        Edges {
+            top: self.px(reach - PANEL_DROP_Y),
+            right: self.px(reach),
+            bottom: self.px(reach + PANEL_DROP_Y),
+            left: self.px(reach),
+        }
     }
 
     /// The glow of a lit LED.
@@ -259,6 +271,11 @@ pub fn set_active(cx: &mut App, theme: SkinTheme) {
     cx.set_global(ActiveSkin(Rc::new(theme)));
 }
 
+/// The panel drop shadow, CSS values: offset y and blur. It has to end inside the window margin
+/// (`WINDOW_MARGIN`): the window edge would cut it in a straight line around the whole group.
+const PANEL_DROP_Y: f32 = 3.0;
+const PANEL_DROP_BLUR: f32 = 8.0;
+
 /// A top to bottom gradient between two colors.
 pub fn vertical_gradient(top: Hsla, bottom: Hsla) -> Background {
     linear_gradient(
@@ -307,6 +324,16 @@ mod tests {
     fn scale_multiplies_every_metric() {
         let theme = SkinTheme::new(&nastro_skin::default_skin(), 1.5);
         assert_eq!(theme.px(24.0), px(36.0));
+    }
+
+    #[test]
+    fn panel_shadow_ends_inside_the_window_margin() {
+        let theme = SkinTheme::new(&nastro_skin::default_skin(), 2.0);
+        let reach = theme.panel_shadow_reach();
+        let margin = theme.px(crate::theme::metrics::WINDOW_MARGIN);
+        for side in [reach.top, reach.right, reach.bottom, reach.left] {
+            assert!(side <= margin, "{side:?} past the {margin:?} margin");
+        }
     }
 
     #[test]

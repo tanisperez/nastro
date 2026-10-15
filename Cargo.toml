@@ -42,6 +42,14 @@ rtrb = "0.4"
 async-channel = "2.5"
 # Already in the tree through gpui, which takes its frames for `RenderImage`.
 image = { version = "0.25", default-features = false }
+# Windows only, for the main window's region (`crates/nastro-app/src/platform/win32.rs`). Both
+# are already in the tree there: `raw-window-handle` through gpui, `windows-sys` through `dirs`.
+raw-window-handle = "0.6"
+windows-sys = { version = "0.61", features = [
+    "Win32_Foundation",
+    "Win32_Graphics_Gdi",
+    "Win32_UI_WindowsAndMessaging",
+] }
 
 [workspace.lints.clippy]
 all = "warn"
@@ -49,7 +57,8 @@ unwrap_used = "warn"
 expect_used = "warn"
 
 [workspace.lints.rust]
-unsafe_code = "forbid"
+# Denied rather than forbidden so the one Win32 module can allow it (AGENTS.md, "Conventions").
+unsafe_code = "deny"
 
 # Same as Postino: fat LTO, one codegen unit, stripped. Panics stay as unwind, so a panic in the
 # audio thread is reported instead of closing the whole app.

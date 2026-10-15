@@ -15,7 +15,8 @@ with its artboards in `design/artboards.html`.
   the active `skin.toml`. The app chrome (menus, Preferences, About) has its own fixed palette.
 - **An idle player does no work.** Nothing animates unless music plays, and the audio engine
   sleeps while paused or stopped.
-- **Readable code over clever code.** Small modules, doc comments on public items, no `unsafe`.
+- **Readable code over clever code.** Small modules, doc comments on public items, no `unsafe`
+  (one Win32 module aside, see "Windows and docking").
 
 ## Crates
 
@@ -104,7 +105,9 @@ The handoff's plan, implemented for version 1 on every platform:
 - One transparent window (`WindowBackgroundAppearance::Transparent`, no title bar, client side
   decorations) holds the whole group. The panels are positioned inside it from the
   `nastro-dock` layout, in window coordinates scaled by the skin scale, with a 16 px margin
-  (`WINDOW_MARGIN`) for their shadows.
+  (`WINDOW_MARGIN`) for their shadows. The panel shadow must end inside that margin
+  (`SkinTheme::panel_shadow_reach`, checked by a test): the window edge would cut it in a
+  straight line around the whole group.
 - gpui-pre 0.3.7 cannot move a window programmatically, and Wayland does not let a client know
   or set its position. So the layout never goes negative: the window's top left corner is
   fixed, and the window size is the bottom right corner of the displayed panels plus the margin.
@@ -112,8 +115,12 @@ The handoff's plan, implemented for version 1 on every platform:
 - Dragging the player's title bar or menu bar moves the window (`start_window_move`). Dragging
   the equalizer's or the playlist's title bar moves that panel inside the window, snapping
   magnetically (`Layout::move_panel`). The playlist's corner grip resizes it.
-- On Wayland, `Window::set_input_region` limits input to the panels, so clicks in the gaps go
-  to the windows behind. Elsewhere the gaps are part of Nastro's window.
+- Clicks outside the panels go to the windows behind on Wayland and on Windows
+  (`platform::limit_input`). On Wayland it is `Window::set_input_region`. gpui implements that
+  only on Wayland, so on Windows Nastro sets a window region itself (`SetWindowRgn`, in
+  `platform/win32.rs`, the only `unsafe` code). A window region also clips drawing, so there it
+  covers each panel plus its shadow, and it is in device pixels, so it is set again when the
+  scale factor changes. On X11 and macOS the whole window still takes input.
 - Menus are drawn inside the window, so while one is open the window grows downwards to
   `MENU_ROOM` and takes input everywhere; it shrinks back when the menu closes.
 - Separate OS windows per panel on X11, macOS and Windows are left for later: they need a
