@@ -5,6 +5,7 @@
 | `codes.tanis.nastro.desktop` | Desktop entry (`Exec=nastro %U`, audio and playlist MIME types) |
 | `nfpm.yaml` | nfpm config shared by the deb and the rpm |
 | `package.sh` | Builds the tarball, the deb and the rpm |
+| `install-latest.sh` | Installs the latest release's tarball into a prefix (`make install-latest`) |
 | `repo.sh` | Builds the signed APT and DNF repositories published on the website |
 | `test-repo.sh` | Tests `repo.sh` end to end with podman (Ubuntu and Fedora containers) |
 

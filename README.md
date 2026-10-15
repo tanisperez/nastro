@@ -68,6 +68,12 @@ On Linux and macOS the `Makefile` wraps the usual commands (`make run`, `make re
 `make test`, `make lint`, ...). `make samples` generates a set of synthetic test tracks (needs
 `ffmpeg`). Run `make help` for the full list.
 
+On Linux, `make install` builds the optimized binary and installs it for your user under
+`~/.local`: the binary, the menu entry and the icons (`PREFIX=` changes the place). The menu
+entry is also what gives the window its icon on Wayland. `make install-latest` installs the
+latest published release the same way, without building: it downloads the Linux tarball from
+GitHub and checks it against the release's `SHA256SUMS`. `make uninstall` removes either.
+
 ## Documentation
 
 The user guide is at <https://nastro.tanis.codes/docs/>. Reference documents in this repository:

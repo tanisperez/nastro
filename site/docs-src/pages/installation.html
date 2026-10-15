@@ -44,7 +44,7 @@ $ sudo zypper install nastro
 ```
 
 <h3>Tarball</h3>
-<p>The <code>.tar.gz</code> uses a <code>/usr</code>-like layout: <code>bin/nastro</code>, plus the desktop entry and the icons under <code>share/</code>. Extract it anywhere and run <code>bin/nastro</code>, or copy its contents under <code>~/.local</code> to get the menu entry. You also need the ALSA runtime library (<code>libasound2</code> on Debian and Ubuntu, <code>alsa-lib</code> on Fedora). A tarball install does not update itself: download new versions from the releases page.</p>
+<p>The <code>.tar.gz</code> uses a <code>/usr</code>-like layout: <code>bin/nastro</code>, plus the desktop entry and the icons under <code>share/</code>. Extract it anywhere and run <code>bin/nastro</code>, or copy its contents under <code>~/.local</code> to get the menu entry and, on Wayland, the window's icon. You also need the ALSA runtime library (<code>libasound2</code> on Debian and Ubuntu, <code>alsa-lib</code> on Fedora). A tarball install does not update itself: download new versions from the releases page.</p>
 
 <h3>What the Linux packages install</h3>
 <p>The <code>.deb</code> and <code>.rpm</code> packages install <code>/usr/bin/nastro</code>, a desktop entry and the icons. The desktop entry lists the common audio types and M3U playlists, so Nastro shows up in the "Open with" menu of your file manager.</p>
@@ -110,3 +110,4 @@ $ cargo run
 $ cargo build --release
 ```
 <p>The first command builds and starts a debug binary. The second builds an optimized binary in <code>target/release/nastro</code>. A full build of gpui takes a while and several GB of disk space.</p>
+<p>On Linux, <code>make install</code> builds the optimized binary and installs it for your user under <code>~/.local</code>: the program in <code>~/.local/bin/nastro</code>, the menu entry and the icons. On Wayland the menu entry is also what gives the window its icon: without it the desktop shows a generic one. <code>make uninstall</code> removes those files and keeps your settings and playlists. <code>PREFIX=</code> changes the place.</p>

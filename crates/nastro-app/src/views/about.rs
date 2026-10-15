@@ -38,6 +38,7 @@ pub fn open(cx: &mut App) {
         is_resizable: false,
         window_decorations: Some(WindowDecorations::Client),
         app_id: Some(crate::APP_ID.to_string()),
+        icon: crate::assets::window_icon(),
         ..TitleBar::window_options()
     };
     let opened = cx.open_window(options, |window, cx| {

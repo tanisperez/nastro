@@ -236,6 +236,7 @@ fn open_main_window(cx: &mut gpui_kit::App, origin: Option<(f32, f32)>) {
         is_resizable: false,
         app_owns_titlebar_drag: true,
         app_id: Some(APP_ID.to_string()),
+        icon: assets::window_icon(),
         focus: true,
         show: true,
         ..WindowOptions::default()

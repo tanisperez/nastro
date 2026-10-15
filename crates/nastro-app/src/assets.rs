@@ -4,6 +4,7 @@
 //! space (`docs/gpui-notes.md`, "Icons").
 
 use std::borrow::Cow;
+use std::sync::{Arc, OnceLock};
 
 use gpui_kit::{AssetSource, Result, SharedString};
 
@@ -57,6 +58,27 @@ impl SkinIcon {
 /// The app icon, for the About window.
 pub const APP_ICON: &str = "nastro/app-icon.png";
 
+/// The app icon's PNG, 256 px (`packaging/icons/png/`).
+const APP_ICON_PNG: &[u8] = include_bytes!("../../../packaging/icons/png/nastro-256.png");
+
+/// The app icon for `WindowOptions::icon`, decoded once. gpui only uses it on X11
+/// (`_NET_WM_ICON`), so elsewhere it is `None` and nothing is decoded: Wayland desktops take the
+/// icon from the installed desktop entry (`make install` or a package), Windows from the
+/// executable, macOS from the bundle.
+pub fn window_icon() -> Option<Arc<image::RgbaImage>> {
+    if !cfg!(target_os = "linux") {
+        return None;
+    }
+    static ICON: OnceLock<Option<Arc<image::RgbaImage>>> = OnceLock::new();
+    ICON.get_or_init(|| {
+        image::load_from_memory_with_format(APP_ICON_PNG, image::ImageFormat::Png)
+            .map(|icon| Arc::new(icon.into_rgba8()))
+            .inspect_err(|error| log::warn!("could not decode the window icon: {error}"))
+            .ok()
+    })
+    .clone()
+}
+
 /// Every skin icon, by file name.
 const ICONS: &[(&str, &[u8])] = &[
     (
@@ -88,10 +110,7 @@ const ICONS: &[(&str, &[u8])] = &[
         include_bytes!("../assets/icons/state-stop.svg"),
     ),
     ("grip.svg", include_bytes!("../assets/icons/grip.svg")),
-    (
-        "app-icon.png",
-        include_bytes!("../../../packaging/icons/png/nastro-256.png"),
-    ),
+    ("app-icon.png", APP_ICON_PNG),
 ];
 
 /// The app's asset source.
@@ -122,6 +141,7 @@ impl AssetSource for Assets {
 }
 
 #[cfg(test)]
+#[allow(clippy::expect_used)]
 mod tests {
     use super::*;
 
@@ -150,5 +170,13 @@ mod tests {
             let loaded = Assets.load(icon.path()).ok().flatten();
             assert!(loaded.is_some(), "{}", icon.path());
         }
+    }
+
+    #[test]
+    fn the_window_icon_decodes() {
+        let icon = image::load_from_memory_with_format(APP_ICON_PNG, image::ImageFormat::Png)
+            .expect("the app icon is a PNG")
+            .into_rgba8();
+        assert_eq!(icon.dimensions(), (256, 256));
     }
 }

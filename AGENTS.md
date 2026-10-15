@@ -160,5 +160,5 @@ Run `make docs` before considering a task done.
 
 ## Commands
 
-See `make help`. Main targets: `run`, `build`, `release`, `check`, `lint`, `format`, `test`,
-`samples`, `docs`.
+See `make help`. Main targets: `run`, `build`, `release`, `install`, `install-latest`, `check`,
+`lint`, `format`, `test`, `samples`, `docs`.

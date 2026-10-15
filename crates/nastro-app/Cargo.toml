@@ -25,7 +25,8 @@ icu_decimal = { workspace = true }
 icu_locale_core = { workspace = true }
 chrono = { workspace = true }
 async-channel = { workspace = true }
-image = { workspace = true }
+# PNG decoding for the window icon (`assets::window_icon`); gpui enables it anyway.
+image = { workspace = true, features = ["png"] }
 nastro-core = { path = "../nastro-core" }
 nastro-skin = { path = "../nastro-skin" }
 nastro-dock = { path = "../nastro-dock" }
