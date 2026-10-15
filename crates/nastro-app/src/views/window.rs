@@ -22,6 +22,9 @@ use crate::views::equalizer::EqualizerPanel;
 use crate::views::player::{PlayerPanel, toggle_shade, toggle_visible};
 use crate::views::playlist::PlaylistPanel;
 
+/// An input region (`None` for the whole window) and the window scale factor it is for.
+type InputRegion = (Option<Vec<Bounds<Pixels>>>, f32);
+
 /// The root view of the main window.
 pub struct NastroWindow {
     focus: FocusHandle,
@@ -31,7 +34,11 @@ pub struct NastroWindow {
     /// The window size last requested, so a resize is only asked for when it changes.
     applied_size: Option<Size<Pixels>>,
     /// The input region last set, and the window scale factor it was set at.
-    applied_region: Option<(Option<Vec<Bounds<Pixels>>>, f32)>,
+    applied_region: Option<InputRegion>,
+    /// The input region waiting for the window size to settle (see [`Self::settle_region`]).
+    pending_region: Option<InputRegion>,
+    /// How many resizes were asked for, so a pending region can tell that none is on the way.
+    resizes: u64,
     _subscriptions: Vec<Subscription>,
 }
 
@@ -60,6 +67,8 @@ impl NastroWindow {
             playlist,
             applied_size: None,
             applied_region: None,
+            pending_region: None,
+            resizes: 0,
             _subscriptions: subscriptions,
         };
         view.sync_window(window, cx);
@@ -83,10 +92,43 @@ impl NastroWindow {
             );
             window.resize(size);
             self.applied_size = Some(size);
+            self.resizes += 1;
         }
         // While a menu is open it may extend past the panels, so the whole window takes input.
         let region = ((!menu_open).then_some(region), window.scale_factor());
-        if self.applied_region.as_ref() != Some(&region) {
+        if self.applied_region.as_ref() == Some(&region) {
+            self.pending_region = None;
+        } else if self.pending_region.replace(region).is_none() {
+            cx.on_next_frame(window, |view, window, cx| {
+                view.settle_region(None, window, cx)
+            });
+        }
+    }
+
+    /// Sets the pending input region once the window size has settled: no resize asked for and
+    /// the same size from one frame to the next, so the last frame drawn has the current size.
+    /// Called at the start of each frame until then, with the state seen at the previous one.
+    ///
+    /// On Wayland setting the region commits the surface at once, and gpui changes the window
+    /// size in two steps. A commit between them shows the last frame stretched to the new size,
+    /// which made the panels tremble while the playlist was resized.
+    fn settle_region(
+        &mut self,
+        previous: Option<(u64, Size<Pixels>)>,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        if self.pending_region.is_none() {
+            return;
+        }
+        let now = (self.resizes, window.viewport_size());
+        if previous != Some(now) {
+            cx.on_next_frame(window, move |view, window, cx| {
+                view.settle_region(Some(now), window, cx)
+            });
+            return;
+        }
+        if let Some(region) = self.pending_region.take() {
             let shadow = cx.skin().panel_shadow_reach();
             platform::limit_input(window, region.0.as_deref(), shadow);
             self.applied_region = Some(region);

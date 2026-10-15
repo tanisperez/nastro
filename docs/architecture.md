@@ -120,7 +120,9 @@ The handoff's plan, implemented for version 1 on every platform:
   only on Wayland, so on Windows Nastro sets a window region itself (`SetWindowRgn`, in
   `platform/win32.rs`, the only `unsafe` code). A window region also clips drawing, so there it
   covers each panel plus its shadow, and it is in device pixels, so it is set again when the
-  scale factor changes. On X11 and macOS the whole window still takes input.
+  scale factor changes. On X11 and macOS the whole window still takes input. The region is
+  set only once the window size has settled for a frame (`NastroWindow::settle_region`):
+  setting it during a resize on Wayland shows a stretched frame (`docs/gpui-notes.md`).
 - Menus are drawn inside the window, so while one is open the window grows downwards to
   `MENU_ROOM` and takes input everywhere; it shrinks back when the menu closes.
 - Separate OS windows per panel on X11, macOS and Windows are left for later: they need a

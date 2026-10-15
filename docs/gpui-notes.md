@@ -23,6 +23,13 @@ Note that `gpui-kit = "0.7.0"` in a fresh lockfile resolves to a newer 0.7.x tha
 - `Window::resize(size)` sets the content size. On Wayland the top left corner stays put. On
   X11 under KWin the window may be moved when it is resized, so do not trust screen positions
   across a resize when testing on XWayland.
+- On Wayland a resize takes two steps: `resize` sets the window geometry at once, and a task
+  sets the new buffer size and the `wp_viewport` destination later; the new buffer arrives
+  with the next frame. Any `wl_surface.commit` in between shows the last frame stretched to
+  the new size. `Window::set_input_region` commits at once, so setting it on every pointer
+  move of a playlist resize made the panels tremble (measured with `WAYLAND_DEBUG=1`: 84 of
+  232 commits stretched). Set the region only once no resize is on the way, see
+  `NastroWindow::settle_region`.
 - `Window::set_input_region(Some(&rects))` (Wayland only, a no-op elsewhere, still in
   gpui-pre 0.3.9) makes clicks outside the rectangles reach the windows behind. `None` restores
   the whole window. Popups drawn inside the window (menus) are subject to it, so lift it while
