@@ -1,10 +1,10 @@
 # Nastro
 
-A lightweight, skinnable desktop music player, without accounts and without telemetry. It plays
-the audio files on your computer. The player, a 10-band equalizer and the playlist dock together
-with magnetic snapping, and the look is a skin: four are built in (Silver, Graphite, Porcelain
-and Nebula), you can write your own as a plain `skin.toml`, and importing classic skins is
-planned.
+Nastro (Italian word for tape, as in cassette tape) is a lightweight, skinnable desktop music
+player, without accounts and without telemetry. It plays the audio files on your computer. The
+player, a 10-band equalizer and the playlist dock together with magnetic snapping, and the look
+is a skin: four are built in (Silver, Graphite, Porcelain and Nebula), you can write your own as
+a plain `skin.toml`, and importing classic skins is planned.
 
 [Website](https://nastro.tanis.codes) · [Download](https://nastro.tanis.codes/install.html) ·
 [Documentation](#documentation) (the website address is provisional)
