@@ -2,6 +2,16 @@
 
 Guidance for AI agents working on Nastro. See `README.md` for the project overview.
 
+The rules shared by every Rust desktop app (design first, stack, telaio, performance,
+translations, logging, CLI, docs, releases, packaging, CI, testing) are imported below. This file
+only adds what is specific to Nastro, and wins where the two differ.
+
+@~/.claude/rust/RULES.md
+
+Nastro does not use telaio yet: its migration is tracked in tanisperez/postino#139. Until then,
+where the shared rules say telaio, the app's own `theme/` and `views/components/` apply, and a fix
+to one of those components should be made in telaio too.
+
 ## Project
 
 Nastro is an open source, lightweight, native desktop music player with a classic, skinnable
@@ -16,6 +26,9 @@ HTTP client with the same stack: when in doubt about a convention, Postino's `AG
 
 ## Decisions taken
 
+- Design system: the shared [telaio](https://github.com/tanisperez/telaio) crate, with Postino
+  and Vano (decided 2026-10-18, tanisperez/postino#139). Nastro's skin layer stays here; the app
+  chrome moves to telaio when Nastro is migrated.
 - Name: **Nastro** (Italian for "tape", as in cassette tape). Never use Winamp, AIMP or any
   other player's name, logo or imagery. Mentioning that Nastro can import classic skins is fine.
 - Stack: Rust (edition 2024, stable toolchain) + `gpui` through
@@ -47,7 +60,6 @@ silently, and do not settle them without asking.
 - Trademark search for "Nastro" (EUIPO and OEPM, class 9). Known association: the beer brand
   "Nastro Azzurro", a different class.
 - Language of the docs (English for now, as in Postino).
-- Whether the app chrome design system becomes a crate shared with Postino.
 - Contributor terms (CLA or DCO). Ask before accepting external contributions.
 
 ## Architecture
