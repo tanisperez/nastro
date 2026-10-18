@@ -34,7 +34,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Generates site/docs/ from site/docs-src/. Fails on a broken link or anchor between pages.
       - name: Build the documentation
@@ -78,11 +78,11 @@ jobs:
           done
           rm -rf "$GNUPGHOME" "$RUNNER_TEMP/gpg-pass"
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
